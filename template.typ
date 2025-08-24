@@ -1,3 +1,14 @@
+/**** UTILITY FUNCTIONS AND CUSTOM BLOCKS ******/
+
+// create LaTeX-like paragraphs
+// TODO: add label? In that case, I need to create a referenceable element with figure
+#let paragraph(title, body, spacing: 1.35em) = block(spacing: spacing, [
+  #strong(title) #h(0.35em) #body
+])
+
+
+/**** TEMPLATE ******/
+
 #let template(
   title: none,
   subtitle: none,
@@ -68,12 +79,6 @@
     spacing: 0.60em, // spacing between paragraphs
     justify: true,
   )
-
-  // create LaTeX-like paragraphs
-  // TODO: add label? In that case, I need to create a referenceable element with figure
-  let paragraph(title, body, spacing: 1.35em) = block(spacing: spacing, [
-    #strong(title) #h(0.35em) #body
-  ])
 
   // Lists
   set list(spacing: 0.75em)

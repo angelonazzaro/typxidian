@@ -1,4 +1,4 @@
-#import "template.typ": template
+#import "template.typ": paragraph, template
 
 #show: template.with(
   title: "Active Inference",
@@ -19,8 +19,7 @@
 \
 #lorem(25)
 
-// TODO: find a way to export it from template.typ
-#paragraph("Test", [let's see *aaa* _aasssa_ #lorem(30)])
+#paragraph("Test", [let's see *aaa* _sdsasssa_ #lorem(30)])
 #figure(image("assets/figures/logo.svg", width: 50%), caption: [AAAAAAAAAA]) <ga>
 @ga
 
