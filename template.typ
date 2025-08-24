@@ -1,3 +1,5 @@
+#import "pages/cover.typ": coverpage
+
 /**** UTILITY FUNCTIONS AND CUSTOM BLOCKS ******/
 
 // create LaTeX-like paragraphs
@@ -48,9 +50,6 @@
     }
   }
 
-  // Heading & Footer
-  set heading(numbering: "1.")
-
   // Figures, Tables & Equations
   set figure(gap: 1.25em)
 
@@ -84,84 +83,15 @@
   set list(spacing: 0.75em)
   set enum(spacing: 0.75em)
 
-  // Cover page
-  {
-    set page(margin: (top: 4em, bottom: 1em))
-    set align(center)
-    set text(32pt, weight: "bold")
-    upper(title)
-
-    linebreak()
-
-    set text(weight: "regular")
-
-    if subtitle != none {
-      v(0.25em)
-      set text(22pt)
-      subtitle
-    }
-
-    // TODO: find a way to use figure_dir without the need to write the full path everytime
-    if logo == none {
-      logo = "assets/figures/logo.svg"
-    }
-
-    image(logo, width: 50%)
-
-    set text(20pt)
-
-    v(0.35em)
-
-    if authors.len() > 0 and supervisors.len() == 0 {
-      let ncols = calc.max(calc.div-euclid(authors.len(), 3), 1)
-
-      grid(
-        columns: (1fr,) * ncols,
-        row-gutter: 15pt,
-        ..authors.map(author => [#upper(author)])
-      )
-    } else {
-      set text(16pt)
-
-      grid(
-        columns: (1fr, 1fr),
-        gutter: 20pt,
-        row-gutter: 15pt,
-        grid(
-          columns: 1fr,
-          row-gutter: 15pt,
-          [
-            *SUPERVISORS* \
-
-            #stack(
-              dir: ttb,
-              spacing: 15pt,
-              ..supervisors.map(s => [#upper(s)]),
-            )
-          ],
-        ),
-        grid(
-          columns: 1fr,
-          row-gutter: 15pt,
-          [
-            *AUTHORS* \
-
-            #stack(
-              dir: ttb,
-              spacing: 15pt,
-              ..authors.map(a => [#upper(a)]),
-            )
-          ],
-        ),
-      )
-    }
-
-    if academic-year != none {
-      v(4em)
-      set text(13pt)
-      [Academic year: #academic-year]
-    }
-  }
+  // TODO: resolve logo not displaying
+  coverpage(
+    title: title,
+    subtitle: subtitle,
+    authors: authors,
+    supervisors: supervisors,
+    logo: logo,
+    academic-year: academic-year,
+  )
 
   if before-content != none {
     pagebreak()
@@ -205,10 +135,42 @@
   pagebreak()
 
   {
-    set page(numbering: "1")
+    // TODO: filter out front matter headings and make the header appear after and up until a
+    // first level heading
+    set page(numbering: "1", header: [
+      #context counter(page).at(here()).at(0)
+      #h(1fr)
+      #context query(selector(heading).before(here())).last().body
+      #box(line(length: 100%, stroke: 0.2pt))
+    ])
+
     counter(page).update(1)
 
-    doc
+    {
+      // Headings, Header & Footer
+      // imitate heading style from Alice in a differentiable wonderland by S.Scardapane
+      set heading(numbering: "1.")
+      show heading: it => block([
+        #if it.level == 1 {
+          // TODO: handle blank pages
+          colbreak()
+          text(28pt)[
+            #counter(heading).display("1")
+            #h(0.4em)
+            #box(line(length: 0.6em, angle: 90deg))
+            #h(0.4em)
+            #it.body
+          ]
+          v(0.75em)
+        } else {
+          it
+        }
+      ])
+
+
+      doc
+    }
+
 
     pagebreak()
 

@@ -10,7 +10,6 @@
 
 
 = Introduction
-
 #lorem(20)
 
 #lorem(30)
@@ -22,6 +21,7 @@
 #paragraph("Test", [let's see *aaa* _sdsasssa_ #lorem(30)])
 #figure(image("assets/figures/logo.svg", width: 50%), caption: [AAAAAAAAAA]) <ga>
 @ga
+
 
 
 #lorem(20)
