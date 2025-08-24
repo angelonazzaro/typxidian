@@ -1,6 +1,6 @@
 #import "pages/cover.typ": coverpage
 
-/**** UTILITY FUNCTIONS AND CUSTOM BLOCKS ******/
+/**** UTILITY FUNCTIONS AND CUSTOM BLOCKS ****/
 
 // create LaTeX-like paragraphs
 // TODO: add label? In that case, I need to create a referenceable element with figure
@@ -9,7 +9,7 @@
 ])
 
 
-/**** TEMPLATE ******/
+/**** TEMPLATE ****/
 
 #let template(
   title: none,
@@ -31,8 +31,10 @@
   set document(title: title, description: description, author: authors, keywords: keywords)
   set text(lang: lang)
 
+  // Color palette
   let blue = rgb(2, 122, 255)
   let purple = rgb(120, 82, 238)
+  let darkgray = rgb("#6d6e6d")
 
   // Links, references and citations coloring and style
   set cite(style: "alphanumeric")
@@ -52,14 +54,22 @@
 
   // Figures, Tables & Equations
   set figure(gap: 1.25em)
+  show figure.where(kind: image): set figure(supplement: [Fig.])
+  show figure.where(kind: table): set figure(supplement: [Tab.])
+  show figure.caption: it => [
+    #strong(it.supplement)~#strong(context it.counter.display(it.numbering))#it.separator~#it.body
+  ]
+  set math.equation(numbering: "(1)", supplement: [Eq.])
 
   // TODO: customize numbering so that it is dependent on section
   // for instance, under section 1., each figure/table/equation will be numbered as (1.X)
 
+  // TODO: this doesnt work with a show rule
   // reset sub-counters at each new section
   show heading.where(level: 1): it => {
-    counter(figure).update(1)
-    counter(math.equation).update(1)
+    counter(figure.where(kind: image)).update(0)
+    counter(figure.where(kind: table)).update(0)
+    counter(math.equation).update(0)
     it
   }
 
@@ -83,7 +93,7 @@
   set list(spacing: 0.75em)
   set enum(spacing: 0.75em)
 
-  // TODO: resolve logo not displaying
+  // COVER PAGE
   coverpage(
     title: title,
     subtitle: subtitle,
@@ -93,6 +103,7 @@
     academic-year: academic-year,
   )
 
+  // FRONT MATTER
   if before-content != none {
     pagebreak()
     before-content
@@ -109,8 +120,8 @@
   show outline.entry.where(level: 1): set text(weight: "bold")
   show outline.entry.where(level: 1): set block(above: 16pt)
 
-  set align(left)
-  set text(11.5pt)
+  set page(numbering: "i")
+  set text(12.5pt)
 
   pagebreak()
 
@@ -134,31 +145,48 @@
 
   pagebreak()
 
+  // MAIN MATTER
   {
     // TODO: filter out front matter headings and make the header appear after and up until a
     // first level heading
-    set page(numbering: "1", header: [
-      #context counter(page).at(here()).at(0)
-      #h(1fr)
-      #context query(selector(heading).before(here())).last().body
-      #box(line(length: 100%, stroke: 0.2pt))
-    ])
 
     counter(page).update(1)
+    set page(
+      numbering: "1",
+      header-ascent: 55% + 0pt,
+      header: context {
+        let page = counter(page).get().first()
+
+        if page > 1 [
+          #set text(fill: darkgray)
+          #let header_title = query(selector(heading).before(here())).last().body
+
+          #let body = block(inset: 0pt, spacing: 0pt, [
+            #if calc.even(page) {
+              [#page #h(1fr) #header_title]
+            } else {
+              [#header_title #h(1fr) #page]
+            }
+            #box(line(length: 100%, stroke: 0.2pt))
+          ])
+          #let alignment = if calc.even(page) { right } else { left }
+          #align(alignment, body)
+        ]
+      },
+    )
+
 
     {
       // Headings, Header & Footer
-      // imitate heading style from Alice in a differentiable wonderland by S.Scardapane
+      // imitate heading style from Alice's Adventures in a Differentiable Wonderland by S.Scardapane
       set heading(numbering: "1.")
       show heading: it => block([
         #if it.level == 1 {
-          // TODO: handle blank pages
-          colbreak()
           text(28pt)[
             #counter(heading).display("1")
-            #h(0.4em)
-            #box(line(length: 0.6em, angle: 90deg))
-            #h(0.4em)
+            #h(0.8em)
+            #box(line(length: 0.8em, stroke: 1.65pt, angle: 90deg), baseline: 2.5pt)
+            #h(0.8em)
             #it.body
           ]
           v(0.75em)
@@ -166,7 +194,6 @@
           it
         }
       ])
-
 
       doc
     }
@@ -177,6 +204,7 @@
     bibliography("references.bib")
   }
 
+  // BACK MATTER
   if after-content != none {
     pagebreak()
     after-content
