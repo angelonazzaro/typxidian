@@ -8,14 +8,19 @@
   academic-year: "2024/2025",
 )
 
+
 = Introduction
 
 #lorem(20)
 
 #lorem(30)
 
-#lorem(10)
+#parbreak()
+\
+#lorem(25)
 
+// TODO: find a way to export it from template.typ
+#paragraph("Test", [let's see *aaa* _aasssa_ #lorem(30)])
 #figure(image("assets/figures/logo.svg", width: 50%), caption: [AAAAAAAAAA]) <ga>
 @ga
 
@@ -24,15 +29,34 @@
 == Let's see
 
 #lorem(10)
+- Let's see
+  - aaaaaa
+  - asss
+  #list(
+    [o cazz],
+    [o mij],
+    [aaaa],
+    marker: "1.",
+  )
+- Test test test
+- AAAA
+
+#enum([o cazz], [o mij], [aaaa])
 
 $
   x pi y dot z cos(x)y
 $
 
+- Let's see
+- Test test test
+- AAAA
+
+
+
 #lorem(15)
 
 #figure(
-  table(columns: 2)[A][B][C][D],
+  table(columns: 2)[#lorem(50)][B][C][D],
   caption: [I'm up here],
 )
 

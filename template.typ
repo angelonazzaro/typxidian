@@ -69,6 +69,16 @@
     justify: true,
   )
 
+  // create LaTeX-like paragraphs
+  // TODO: add label? In that case, I need to create a referenceable element with figure
+  let paragraph(title, body, spacing: 1.35em) = block(spacing: spacing, [
+    #strong(title) #h(0.35em) #body
+  ])
+
+  // Lists
+  set list(spacing: 0.75em)
+  set enum(spacing: 0.75em)
+
   // Cover page
   {
     set page(margin: (top: 4em, bottom: 1em))
