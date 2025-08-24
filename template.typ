@@ -1,13 +1,129 @@
 #import "pages/cover.typ": coverpage
+#import "@preview/fontawesome:0.6.0": fa-icon
+
+
+// Color palette
+#let blue = rgb(2, 122, 255)
+#let purple = rgb(120, 82, 238)
+#let darkgray = rgb("#6d6e6d")
+#let cyan = rgb("53dfdd")
+#let red = rgb("fb464c")
+#let orange = rgb("e9973f")
+#let green = rgb("44cf6e")
+
+// Font sizes
+#let body-size = 12.5pt
 
 /**** UTILITY FUNCTIONS AND CUSTOM BLOCKS ****/
 
-// create LaTeX-like paragraphs
+// Create LaTeX-like paragraphs
 // TODO: add label? In that case, I need to create a referenceable element with figure
 #let paragraph(title, body, spacing: 1.35em) = block(spacing: spacing, [
   #strong(title) #h(0.35em) #body
 ])
 
+// Callout boxes
+// inspired from babble-bubbles package
+//
+// TODO: make them breakable across pages
+#let callout(
+  body,
+  kind: "callout",
+  supplement: [Call.],
+  title: "Callout",
+  fill: blue,
+  title-color: white,
+  body-color: black,
+  icon: none,
+) = {
+  block(below: 1em, box(
+    radius: 0.2em,
+    inset: (top: 0.75em, bottom: 1em, right: 0.75em, left: 0.75em),
+    width: 100%,
+    fill: fill,
+    clip: true,
+    [
+      #text(fill: title-color, weight: "bold", size: 13.5pt)[
+        #if icon != none {
+          icon
+          h(0.15em)
+        }
+        #title]
+      \
+      #text(fill: body-color)[#body]
+    ],
+  ))
+}
+
+#let info(
+  body,
+  title: "Info",
+  icon: fa-icon("info-circle"),
+) = {
+  callout(
+    body,
+    title: title,
+    fill: blue.lighten(15%),
+    title-color: blue.darken(50%),
+    icon: icon,
+  )
+}
+
+#let faq(
+  body,
+  title: "FAQ",
+  icon: fa-icon("question-circle"),
+) = {
+  callout(
+    body,
+    title: title,
+    fill: orange.lighten(15%),
+    title-color: orange.darken(50%),
+    icon: icon,
+  )
+}
+
+#let tip(
+  body,
+  title: "Tip",
+  icon: fa-icon("lightbulb"),
+) = {
+  callout(
+    body,
+    title: title,
+    fill: cyan.lighten(15%),
+    title-color: cyan.darken(50%),
+    icon: icon,
+  )
+}
+
+#let success(
+  body,
+  title: "Success",
+  icon: fa-icon("times-circle"),
+) = {
+  callout(
+    body,
+    title: title,
+    fill: green.lighten(15%),
+    title-color: green.darken(50%),
+    icon: icon,
+  )
+}
+
+#let danger(
+  body,
+  title: "Danger",
+  icon: fa-icon("times-circle"),
+) = {
+  callout(
+    body,
+    title: title,
+    fill: red.lighten(15%),
+    title-color: red.darken(50%),
+    icon: icon,
+  )
+}
 
 /**** TEMPLATE ****/
 
@@ -15,13 +131,14 @@
   title: none,
   subtitle: none,
   description: none,
+  abstract: none,
   keywords: (),
   authors: (),
   supervisors: (),
   academic-year: none,
   lang: "en",
   logo: none,
-  figure_dir: "assets/figures",
+  figure-dir: "assets/figures",
   after-content: none,
   before-content: none,
   include-credits: true,
@@ -30,11 +147,6 @@
   // PREAMBLE: General styles and functions
   set document(title: title, description: description, author: authors, keywords: keywords)
   set text(lang: lang)
-
-  // Color palette
-  let blue = rgb(2, 122, 255)
-  let purple = rgb(120, 82, 238)
-  let darkgray = rgb("#6d6e6d")
 
   // Links, references and citations coloring and style
   set cite(style: "alphanumeric")
@@ -67,9 +179,9 @@
   // TODO: this doesnt work with a show rule
   // reset sub-counters at each new section
   show heading.where(level: 1): it => {
-    counter(figure.where(kind: image)).update(0)
-    counter(figure.where(kind: table)).update(0)
-    counter(math.equation).update(0)
+    context counter(figure.where(kind: image)).update(0)
+    context counter(figure.where(kind: table)).update(0)
+    context counter(math.equation).update(0)
     it
   }
 
@@ -103,47 +215,22 @@
     academic-year: academic-year,
   )
 
+  set page(numbering: "i")
+  set text(body-size)
+
+  counter(page).update(1)
   // FRONT MATTER
   if before-content != none {
     pagebreak()
     before-content
   }
 
-  set outline.entry(fill: grid(
-    columns: 2,
-    gutter: 0pt,
-    repeat[~.], h(11pt),
-  ))
+  if abstract != none {
+    align(center, text(22pt)[= Abstract])
+    abstract
+  }
 
-  // from haw-hamburg 0.6.1 template
-  show outline.entry.where(level: 1): set outline.entry(fill: none)
-  show outline.entry.where(level: 1): set text(weight: "bold")
-  show outline.entry.where(level: 1): set block(above: 16pt)
-
-  set page(numbering: "i")
-  set text(12.5pt)
-
-  pagebreak()
-
-  outline(
-    depth: 3,
-    indent: auto,
-  )
-  pagebreak()
-
-  outline(
-    title: [List of Figures],
-    target: figure.where(kind: image),
-  )
-
-  pagebreak()
-
-  outline(
-    title: [List of Tables],
-    target: figure.where(kind: table),
-  )
-
-  pagebreak()
+  include "pages/toc.typ"
 
   // MAIN MATTER
   {

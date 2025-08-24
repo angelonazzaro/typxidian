@@ -1,4 +1,4 @@
-#import "template.typ": paragraph, template
+#import "template.typ": danger, faq, info, paragraph, success, template, tip
 
 #show: template.with(
   title: "Active Inference",
@@ -6,14 +6,23 @@
   authors: ("Thomas Parr", "Giovanni Pezzullo", "Karl J. Friston"),
   supervisors: ("Prof. Roberto Tagliaferri", "Prof. Francesco Bardozzo", "Dr. Andrea F. Terlizzi"),
   academic-year: "2024/2025",
+  abstract: [#lorem(80)],
 )
 
 
 = Introduction
 #lorem(20)
 
-#context counter(page).get()
-#context counter(heading).get().len()
+#info(
+  [#lorem(20)
+    #figure(image("assets/figures/logo.svg", width: 50%), caption: [AAAAAAAAAA]) <ga3>
+  ],
+  title: "AAAA",
+)
+#faq([#lorem(20)], title: "AAAA")
+#tip([#lorem(20)], title: "AAAA")
+#success([#lorem(20)], title: "AAAA")
+#danger([#lorem(20)], title: "AAAA")
 
 #lorem(30)
 
