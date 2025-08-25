@@ -1,6 +1,12 @@
 #import "pages/cover.typ": coverpage
+
 #import "@preview/fontawesome:0.6.0": fa-icon
 
+#import "@preview/cetz:0.4.1" // drawing inspired by tikz
+#import "@preview/booktabs:0.0.4" // booktabs-like tables
+#import "@preview/wrap-it:0.1.1" // wrap figures around text
+#import "@preview/subpar:0.2.2" // create subfigures
+#import "@preview/i-figured:0.2.4" // figure numbering per section.
 
 // Color palette
 #let blue = rgb(2, 122, 255)
