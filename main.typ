@@ -32,9 +32,7 @@
 
 #paragraph("Test", [let's see *aaa* _sdsasssa_ #lorem(30)])
 #figure(image("assets/figures/logo.svg", width: 50%), caption: [AAAAAAAAAA]) <ga>
-#figure(image("assets/figures/logo.svg", width: 50%), caption: [AAAAAAAAAA]) <ga1>
 
-@ga1
 
 #lorem(20)
 == Let's see
@@ -84,25 +82,33 @@ $
   table(columns: 2)[#lorem(50)][B][C][D],
   caption: [I'm up here],
 )
+<b>
+@b
+
+#let x = context query(selector(heading.where(level: 1)).before(here())).last()
+#context counter(heading).get()
+
 
 #lorem(15)
-
+#pagebreak()
 = AAA
 // #context query(selector(heading).before(here())).last().level
 // #context counter(math.equation).get()
 // #context counter(math.equation).update(0)
 // #context counter(figure.where(kind: table)).update(0)
-
+aaaa
 #figure(
   table(columns: 2)[#lorem(50)][B][C][D],
   caption: [I'm up here],
 )
 
 
-
+== aaaaa
+#context counter(heading).get().first()
 $
   x pi y dot z cos(x)
 $
 === Oh yeah
 @vaswani2023attentionneed
 
+#context counter(heading).get()

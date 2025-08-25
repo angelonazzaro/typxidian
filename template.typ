@@ -6,7 +6,6 @@
 #import "@preview/booktabs:0.0.4" // booktabs-like tables
 #import "@preview/wrap-it:0.1.1" // wrap figures around text
 #import "@preview/subpar:0.2.2" // create subfigures
-#import "@preview/i-figured:0.2.4" // figure numbering per section.
 
 // Color palette
 #let blue = rgb(2, 122, 255)
@@ -172,16 +171,30 @@
 
   // Figures, Tables & Equations
   set figure(gap: 1.25em)
-  show figure.where(kind: image): set figure(supplement: [Fig.])
-  show figure.where(kind: table): set figure(supplement: [Tab.])
   show figure.caption: it => [
     #strong(it.supplement)~#strong(context it.counter.display(it.numbering))#it.separator~#it.body
   ]
-  set math.equation(numbering: "(1)", supplement: [Eq.])
 
-  // TODO: customize numbering so that it is dependent on section
+  // customize numbering so that it is dependent on section
   // for instance, under section 1., each figure/table/equation will be numbered as (1.X)
+  let items-heading-numbering = (..args, kind: "generic") => {
+    let curr-sec-num = context counter(heading).get().first()
+    // first argument is the current element counter
+    let local-num = args.at(0)
 
+    if kind == "equation" {
+      [(#curr-sec-num.#local-num)]
+    } else {
+      [#curr-sec-num.#local-num]
+    }
+  }
+
+  show figure.where(kind: image): set figure(numbering: items-heading-numbering, supplement: [Fig.])
+  show figure.where(kind: table): set figure(numbering: items-heading-numbering, supplement: [Tab.])
+  set math.equation(
+    numbering: (..args) => items-heading-numbering(..args, kind: "equation"),
+    supplement: [Eq.],
+  )
   // Paragraphs
 
   // increase spacing between paragraphs and heading, figures and tables
@@ -231,34 +244,36 @@
 
   // MAIN MATTER
   {
-    // TODO: filter out front matter headings and make the header appear after and up until a
-    // first level heading
-
     counter(page).update(1)
     set page(
       numbering: "1",
+      margin: (inside: 80pt, outside: 50pt),
+      // binding: "left",
       header-ascent: 55% + 0pt,
       header: context {
-        let page = counter(page).get().first()
+        let curr-page = counter(page).get().first()
+        // check if there is a one-level heading on the same page, if so dont's display the
+        // header
+        let next-h1 = query(selector(heading.where(level: 1)).after(here())).first()
+        let next-h1-page = counter(page).at(next-h1.location()).first()
 
-        if page > 1 [
+        if curr-page > 1 and next-h1-page != curr-page [
           #set text(fill: darkgray)
-          #let header_title = query(selector(heading).before(here())).last().body
+          #let header-title = query(selector(heading).before(here())).last().body
 
           #let body = block(inset: 0pt, spacing: 0pt, [
-            #if calc.even(page) {
-              [#page #h(1fr) #header_title]
+            #if calc.even(curr-page) {
+              [#curr-page #h(1fr) #header-title]
             } else {
-              [#header_title #h(1fr) #page]
+              [#header-title #h(1fr) #curr-page]
             }
             #box(line(length: 100%, stroke: 0.2pt))
           ])
-          #let alignment = if calc.even(page) { right } else { left }
+          #let alignment = if calc.even(curr-page) { right } else { left }
           #align(alignment, body)
         ]
       },
     )
-
 
     {
       // Headings, Header & Footer
@@ -285,6 +300,7 @@
 
     pagebreak()
 
+    set page(header: none)
     bibliography("references.bib")
   }
 
