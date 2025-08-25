@@ -176,15 +176,6 @@
   // TODO: customize numbering so that it is dependent on section
   // for instance, under section 1., each figure/table/equation will be numbered as (1.X)
 
-  // TODO: this doesnt work with a show rule
-  // reset sub-counters at each new section
-  show heading.where(level: 1): it => {
-    context counter(figure.where(kind: image)).update(0)
-    context counter(figure.where(kind: table)).update(0)
-    context counter(math.equation).update(0)
-    it
-  }
-
   // Paragraphs
 
   // increase spacing between paragraphs and heading, figures and tables
@@ -267,19 +258,19 @@
       // Headings, Header & Footer
       // imitate heading style from Alice's Adventures in a Differentiable Wonderland by S.Scardapane
       set heading(numbering: "1.")
-      show heading: it => block([
-        #if it.level == 1 {
-          text(28pt)[
-            #counter(heading).display("1")
-            #h(0.8em)
-            #box(line(length: 0.8em, stroke: 1.65pt, angle: 90deg), baseline: 2.5pt)
-            #h(0.8em)
-            #it.body
-          ]
-          v(0.75em)
-        } else {
-          it
-        }
+      show heading.where(level: 1): it => block([
+        #text(28pt)[
+          #counter(heading).display("1")
+          #h(0.8em)
+          #box(line(length: 0.8em, stroke: 1.65pt, angle: 90deg), baseline: 2.5pt)
+          #h(0.8em)
+          #it.body
+        ]
+        #v(0.75em)
+        // reset sub-counters at each new section
+        #context counter(figure.where(kind: image)).update(0)
+        #context counter(figure.where(kind: table)).update(0)
+        #context counter(math.equation).update(0)
       ])
 
       doc
