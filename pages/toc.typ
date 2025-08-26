@@ -50,3 +50,36 @@
 )
 
 #pagebreak()
+
+#show outline.entry: set outline.entry(
+  fill: grid(
+    columns: 2,
+    gutter: 0pt,
+    repeat[~.], h(11pt),
+  ),
+)
+
+
+#outline(
+  title: [List of Definitions],
+  target: figure.where(kind: "definition"),
+  indent: auto,
+)
+
+#pagebreak()
+
+#show outline.entry: set outline.entry(
+  fill: grid(
+    columns: 2,
+    gutter: 0pt,
+    repeat[~.], h(11pt),
+  ),
+)
+
+
+#outline(
+  title: [List of Theorems],
+  target: figure.where(kind: "theorem"),
+  indent: auto,
+)
+

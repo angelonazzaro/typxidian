@@ -6,9 +6,24 @@
 #import "@preview/booktabs:0.0.4" // booktabs-like tables
 #import "@preview/wrap-it:0.1.1" // wrap figures around text
 #import "@preview/subpar:0.2.2" // create subfigures
+#import "@preview/decasify:0.10.1": sentencecase
 
 // Color palette
-#let blue = rgb(2, 122, 255)
+#let info-title = rgb(48, 107, 246)
+#let info-bg = rgb(234, 240, 251)
+
+#let faq-title = rgb(221, 124, 46)
+#let faq-bg = rgb(252, 242, 234)
+
+#let tip-title = rgb(86, 188, 187)
+#let tip-bg = rgb(238, 248, 248)
+
+#let success-title = rgb(84, 182, 81)
+#let success-bg = rgb(238, 248, 236)
+
+#let danger-title = rgb(214, 64, 67)
+#let danger-bg = rgb(251, 236, 238)
+
 #let purple = rgb(120, 82, 238)
 #let darkgray = rgb("#6d6e6d")
 #let cyan = rgb("53dfdd")
@@ -29,8 +44,8 @@
 
 // Callout boxes
 // inspired from babble-bubbles package
-//
-// TODO: make them breakable across pages
+
+// TODO: fix caption and numbering display issues
 #let callout(
   body,
   kind: "callout",
@@ -41,36 +56,44 @@
   body-color: black,
   icon: none,
 ) = {
-  block(below: 1em, box(
-    radius: 0.2em,
-    inset: (top: 0.75em, bottom: 1em, right: 0.75em, left: 0.75em),
-    width: 100%,
-    fill: fill,
-    clip: true,
-    [
-      #text(fill: title-color, weight: "bold", size: 13.5pt)[
-        #if icon != none {
-          icon
-          h(0.15em)
-        }
-        #title]
-      \
-      #text(fill: body-color)[#body]
-    ],
-  ))
+  figure(
+    caption: none,
+    block(below: 1em, box(
+      radius: 0.2em,
+      inset: (top: 0.75em, bottom: 1em, right: 0.75em, left: 0.75em),
+      width: 100%,
+      fill: fill,
+      clip: true,
+      [
+        #text(fill: title-color, weight: "bold", size: 13.5pt)[
+          #if icon != none {
+            icon
+            h(0.15em)
+          }
+          #title #h(0.15em) (#supplement #context counter(figure.where(kind: kind)).display("1"))]
+        \
+        #text(fill: body-color)[#body]
+      ],
+    )),
+    supplement: supplement,
+    kind: kind,
+  )
 }
 
 #let info(
   body,
   title: "Info",
   icon: fa-icon("info-circle"),
+  supplement: [Info.],
 ) = {
   callout(
     body,
     title: title,
-    fill: blue.lighten(15%),
-    title-color: blue.darken(50%),
+    fill: info-bg.saturate(5%),
+    title-color: info-title,
     icon: icon,
+    supplement: supplement,
+    kind: "info",
   )
 }
 
@@ -78,13 +101,16 @@
   body,
   title: "FAQ",
   icon: fa-icon("question-circle"),
+  supplement: [FAQ.],
 ) = {
   callout(
     body,
     title: title,
-    fill: orange.lighten(15%),
-    title-color: orange.darken(50%),
+    fill: faq-bg.saturate(5%),
+    title-color: faq-title,
     icon: icon,
+    supplement: supplement,
+    kind: "faq",
   )
 }
 
@@ -92,13 +118,16 @@
   body,
   title: "Tip",
   icon: fa-icon("lightbulb"),
+  supplement: [Tip.],
 ) = {
   callout(
     body,
     title: title,
-    fill: cyan.lighten(15%),
-    title-color: cyan.darken(50%),
+    fill: tip-bg.saturate(5%),
+    title-color: tip-title,
     icon: icon,
+    supplement: supplement,
+    kind: "tip",
   )
 }
 
@@ -106,13 +135,16 @@
   body,
   title: "Success",
   icon: fa-icon("times-circle"),
+  supplement: [Succ.],
 ) = {
   callout(
     body,
     title: title,
-    fill: green.lighten(15%),
-    title-color: green.darken(50%),
+    fill: success-bg.saturate(5%),
+    title-color: success-title,
     icon: icon,
+    supplement: [Succ.],
+    kind: "success",
   )
 }
 
@@ -120,15 +152,70 @@
   body,
   title: "Danger",
   icon: fa-icon("times-circle"),
+  supplement: [Dang.],
 ) = {
   callout(
     body,
     title: title,
-    fill: red.lighten(15%),
-    title-color: red.darken(50%),
+    fill: danger-bg.saturate(5%),
+    title-color: danger-title,
     icon: icon,
+    supplement: supplement,
+    kind: "danger",
   )
 }
+
+// TODO: handle numbering and referencing
+#let math-callout(body, title, supplement, kind, stroke-fill) = {
+  figure(
+    block(
+      inset: (top: 0.75em - 0.7em, bottom: 0.75em - 0.45em, right: 0.75em, left: 0.75em),
+      width: 100%,
+      clip: true,
+      stroke: (left: 2.5pt + stroke-fill),
+      [
+        #strong([
+          #sentencecase(kind)
+          #if kind == "definition" {
+            supplement
+          }
+          (#title)]) #h(0.15em) #emph(body)
+      ],
+    ),
+    kind: kind,
+    supplement: supplement,
+  )
+}
+
+#let definition(
+  body,
+  title: "Definition",
+  supplement: [D.],
+) = {
+  math-callout(
+    body,
+    title,
+    supplement,
+    "definition",
+    purple,
+  )
+}
+
+#let theorem(
+  body,
+  title: "Theorem",
+  supplement: "Theorem",
+) = {
+  math-callout(
+    body,
+    title,
+    "Theorem",
+    "theorem",
+    blue,
+  )
+}
+
+
 
 /**** TEMPLATE ****/
 
@@ -169,6 +256,32 @@
     }
   }
 
+  // TODO: optimize and remove boilerplate
+  show figure.where(kind: "callout"): it => align(left)[
+    #it.body
+  ]
+  show figure.where(kind: "info"): it => align(left)[
+    #it.body
+  ]
+  show figure.where(kind: "danger"): it => align(left)[
+    #it.body
+  ]
+  show figure.where(kind: "success"): it => align(left)[
+    #it.body
+  ]
+  show figure.where(kind: "faq"): it => align(left)[
+    #it.body
+  ]
+  show figure.where(kind: "tip"): it => align(left)[
+    #it.body
+  ]
+  show figure.where(kind: "definition"): it => align(left)[
+    #it.body
+  ]
+  show figure.where(kind: "theorem"): it => align(left)[
+    #it.body
+  ]
+
   // Figures, Tables & Equations
   set figure(gap: 1.25em)
   show figure.caption: it => [
@@ -191,6 +304,15 @@
 
   show figure.where(kind: image): set figure(numbering: items-heading-numbering, supplement: [Fig.])
   show figure.where(kind: table): set figure(numbering: items-heading-numbering, supplement: [Tab.])
+  // TODO: optimize and remove boilerplate
+  show figure.where(kind: "callout"): set figure(numbering: items-heading-numbering)
+  show figure.where(kind: "info"): set figure(numbering: items-heading-numbering)
+  show figure.where(kind: "faq"): set figure(numbering: items-heading-numbering)
+  show figure.where(kind: "success"): set figure(numbering: items-heading-numbering)
+  show figure.where(kind: "tip"): set figure(numbering: items-heading-numbering)
+  show figure.where(kind: "danger"): set figure(numbering: items-heading-numbering)
+  show figure.where(kind: "theorem"): set figure(numbering: items-heading-numbering)
+  show figure.where(kind: "definition"): set figure(numbering: items-heading-numbering)
   set math.equation(
     numbering: (..args) => items-heading-numbering(..args, kind: "equation"),
     supplement: [Eq.],
@@ -296,7 +418,6 @@
 
       doc
     }
-
 
     pagebreak()
 

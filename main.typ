@@ -1,4 +1,4 @@
-#import "template.typ": danger, faq, info, paragraph, success, template, tip
+#import "template.typ": danger, definition, faq, info, paragraph, success, template, theorem, tip
 
 #show: template.with(
   title: "Active Inference",
@@ -23,9 +23,20 @@
 #tip([#lorem(20)], title: "AAAA")
 #success([#lorem(20)], title: "AAAA")
 #danger([#lorem(20)], title: "AAAA")
-
-#lorem(30)
-
+<c>
+@c
+#definition(
+  [#lorem(20)],
+  title: "KTM",
+)
+<a>
+@a
+#theorem(
+  [#lorem(20)],
+  title: "KTM",
+)
+<b1>
+@b1
 #parbreak()
 \
 #lorem(25)
