@@ -32,7 +32,7 @@
 #let green = rgb("44cf6e")
 
 // Font sizes
-#let body-size = 12.5pt
+#let body-size = 13.5pt
 
 /**** UTILITY FUNCTIONS AND CUSTOM BLOCKS ****/
 
@@ -402,10 +402,10 @@
       // imitate heading style from Alice's Adventures in a Differentiable Wonderland by S.Scardapane
       set heading(numbering: "1.")
       show heading.where(level: 1): it => block([
-        #text(28pt)[
+        #text(30pt)[
           #counter(heading).display("1")
           #h(0.8em)
-          #box(line(length: 0.8em, stroke: 1.65pt, angle: 90deg), baseline: 2.5pt)
+          #box(line(length: 1em, stroke: 1.65pt + gray, angle: 90deg), baseline: 6pt)
           #h(0.8em)
           #it.body
         ]
