@@ -347,7 +347,7 @@
     academic-year: academic-year,
   )
 
-  set page(numbering: "i")
+  set page(numbering: "i", margin: (inside: 50pt, outside: 80pt))
   set text(body-size)
 
   counter(page).update(1)
@@ -366,12 +366,9 @@
 
   // MAIN MATTER
   {
-    counter(page).update(1)
     set page(
       numbering: "1",
-      margin: (inside: 80pt, outside: 50pt),
-      // binding: "left",
-      header-ascent: 55% + 0pt,
+      header-ascent: 45% + 0pt,
       header: context {
         let curr-page = counter(page).get().first()
         // check if there is a one-level heading on the same page, if so dont's display the
@@ -396,6 +393,7 @@
         ]
       },
     )
+    counter(page).update(1)
 
     {
       // Headings, Header & Footer
