@@ -1,4 +1,6 @@
-#import "template.typ": danger, definition, faq, info, paragraph, success, template, theorem, tip
+#import "template.typ": (
+  danger, definition, faq, gls, glspl, info, paragraph, success, template, theorem, tip,
+)
 
 #show: template.with(
   title: "Active Inference",
@@ -12,6 +14,7 @@
 
 = Introduction
 #lorem(20)
+@unisa
 
 #info(
   [#lorem(20)

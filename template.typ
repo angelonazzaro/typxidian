@@ -8,6 +8,9 @@
 #import "@preview/subpar:0.2.2" // create subfigures
 #import "@preview/decasify:0.10.1": sentencecase
 #import "@preview/headcount:0.1.0": *
+#import "@preview/glossarium:0.5.9": gls, glspl, make-glossary, print-glossary, register-glossary
+#import "glossary.typ": glossary-entry-list
+
 
 // Color palette
 #let info-title = rgb(48, 107, 246)
@@ -332,6 +335,15 @@
   }
 
   include "pages/toc.typ"
+
+
+  show: make-glossary
+
+  register-glossary(glossary-entry-list)
+  pagebreak()
+  [= Glossary]
+  print-glossary(glossary-entry-list)
+
 
   // MAIN MATTER
   {
