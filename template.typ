@@ -176,11 +176,11 @@
       stroke: (left: 2.5pt + stroke-fill),
       [
         #strong([
-          #sentencecase(kind)
-          #if kind == "definition" {
-            supplement
-          }
-          (#title)]) #h(0.15em) #emph(body)
+          #sentencecase(supplement)
+          #context counter(figure.where(kind: kind)).display(dependent-numbering("1.1"))
+          (#title)]) #h(
+          0.15em,
+        ) #emph(body)
       ],
     ),
     kind: kind,
@@ -191,7 +191,7 @@
 #let definition(
   body,
   title: "Definition",
-  supplement: [D.],
+  supplement: [Definition],
 ) = {
   math-callout(
     body,
