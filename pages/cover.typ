@@ -28,7 +28,7 @@
 
   image(logo, width: 50%)
 
-  set text(20pt)
+  set text(18pt)
 
   v(0.35em)
 
@@ -41,7 +41,7 @@
       ..authors.map(author => [#upper(author)])
     )
   } else {
-    set text(16pt)
+    set text(15pt)
 
     grid(
       columns: (1fr, 1fr),

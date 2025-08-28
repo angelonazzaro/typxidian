@@ -7,6 +7,7 @@
 #import "@preview/wrap-it:0.1.1" // wrap figures around text
 #import "@preview/subpar:0.2.2" // create subfigures
 #import "@preview/decasify:0.10.1": sentencecase
+#import "@preview/headcount:0.1.0": *
 
 // Color palette
 #let info-title = rgb(48, 107, 246)
@@ -70,7 +71,7 @@
             icon
             h(0.15em)
           }
-          #title #h(0.15em) (#supplement #context counter(figure.where(kind: kind)).display("1"))]
+          #title #h(0.15em) (#supplement #context counter(figure.where(kind: kind)).display(dependent-numbering("1.1")))]
         \
         #text(fill: body-color)[#body]
       ],
@@ -228,6 +229,7 @@
   authors: (),
   supervisors: (),
   academic-year: none,
+  font: "Bitstream Charter",
   lang: "en",
   logo: none,
   figure-dir: "assets/figures",
@@ -238,7 +240,7 @@
 ) = {
   // PREAMBLE: General styles and functions
   set document(title: title, description: description, author: authors, keywords: keywords)
-  set text(lang: lang)
+  set text(lang: lang, font: font)
 
   // Links, references and citations coloring and style
   set cite(style: "alphanumeric")
@@ -256,65 +258,32 @@
     }
   }
 
-  // TODO: optimize and remove boilerplate
-  show figure.where(kind: "callout"): it => align(left)[
-    #it.body
-  ]
-  show figure.where(kind: "info"): it => align(left)[
-    #it.body
-  ]
-  show figure.where(kind: "danger"): it => align(left)[
-    #it.body
-  ]
-  show figure.where(kind: "success"): it => align(left)[
-    #it.body
-  ]
-  show figure.where(kind: "faq"): it => align(left)[
-    #it.body
-  ]
-  show figure.where(kind: "tip"): it => align(left)[
-    #it.body
-  ]
-  show figure.where(kind: "definition"): it => align(left)[
-    #it.body
-  ]
-  show figure.where(kind: "theorem"): it => align(left)[
-    #it.body
-  ]
-
   // Figures, Tables & Equations
   set figure(gap: 1.25em)
   show figure.caption: it => [
     #strong(it.supplement)~#strong(context it.counter.display(it.numbering))#it.separator~#it.body
   ]
 
-  // customize numbering so that it is dependent on section
-  // for instance, under section 1., each figure/table/equation will be numbered as (1.X)
-  let items-heading-numbering = (..args, kind: "generic") => {
-    let curr-sec-num = context counter(heading).get().first()
-    // first argument is the current element counter
-    let local-num = args.at(0)
+  show figure: set figure(numbering: dependent-numbering("1.1"))
+  show figure.where(kind: image): set figure(
+    supplement: [Fig.],
+  )
+  show figure.where(kind: table): set figure(
+    supplement: [Tab.],
+  )
 
-    if kind == "equation" {
-      [(#curr-sec-num.#local-num)]
+  let envs = ("callout", "info", "faq", "success", "tip", "danger", "theorem", "definition")
+
+  show figure: it => {
+    if it.kind in envs {
+      align(left)[#it.body]
     } else {
-      [#curr-sec-num.#local-num]
+      it
     }
   }
 
-  show figure.where(kind: image): set figure(numbering: items-heading-numbering, supplement: [Fig.])
-  show figure.where(kind: table): set figure(numbering: items-heading-numbering, supplement: [Tab.])
-  // TODO: optimize and remove boilerplate
-  show figure.where(kind: "callout"): set figure(numbering: items-heading-numbering)
-  show figure.where(kind: "info"): set figure(numbering: items-heading-numbering)
-  show figure.where(kind: "faq"): set figure(numbering: items-heading-numbering)
-  show figure.where(kind: "success"): set figure(numbering: items-heading-numbering)
-  show figure.where(kind: "tip"): set figure(numbering: items-heading-numbering)
-  show figure.where(kind: "danger"): set figure(numbering: items-heading-numbering)
-  show figure.where(kind: "theorem"): set figure(numbering: items-heading-numbering)
-  show figure.where(kind: "definition"): set figure(numbering: items-heading-numbering)
   set math.equation(
-    numbering: (..args) => items-heading-numbering(..args, kind: "equation"),
+    numbering: dependent-numbering("(1.1)"),
     supplement: [Eq.],
   )
   // Paragraphs
@@ -366,40 +335,45 @@
 
   // MAIN MATTER
   {
-    set page(
-      numbering: "1",
-      header-ascent: 45% + 0pt,
-      header: context {
-        let curr-page = counter(page).get().first()
-        // check if there is a one-level heading on the same page, if so dont's display the
-        // header
-        let next-h1 = query(selector(heading.where(level: 1)).after(here())).first()
-        let next-h1-page = counter(page).at(next-h1.location()).first()
-
-        if curr-page > 1 and next-h1-page != curr-page [
-          #set text(fill: darkgray)
-          #let header-title = query(selector(heading).before(here())).last().body
-
-          #let body = block(inset: 0pt, spacing: 0pt, [
-            #if calc.even(curr-page) {
-              [#curr-page #h(1fr) #header-title]
-            } else {
-              [#header-title #h(1fr) #curr-page]
-            }
-            #box(line(length: 100%, stroke: 0.2pt))
-          ])
-          #let alignment = if calc.even(curr-page) { right } else { left }
-          #align(alignment, body)
-        ]
-      },
-    )
-    counter(page).update(1)
-
     {
+      set page(
+        numbering: "1",
+        header-ascent: 45% + 0pt,
+        header: context {
+          let curr-page = counter(page).get().first()
+          // check if there is a one-level heading on the same page, if so dont's display the
+          // header
+          let next-h1 = query(selector(heading.where(level: 1)).after(here())).first()
+          let next-h1-page = counter(page).at(next-h1.location()).first()
+
+          if curr-page > 1 and next-h1-page > 1 and next-h1-page != curr-page [
+            #set text(fill: darkgray)
+
+            #let body = block(inset: 0pt, spacing: 0pt, [
+              #if calc.even(curr-page) {
+                let header-title = query(selector(heading).before(here())).last().body
+                [#curr-page #h(1fr) #header-title]
+              } else {
+                let header = query(selector(heading.where(level: 1)).before(here())).last()
+                [Chapter #counter(heading).at(header.location()).at(0): #header.body #h(1fr) #curr-page]
+              }
+              #box(line(length: 100%, stroke: 0.2pt))
+            ])
+            #let alignment = if calc.even(curr-page) { right } else { left }
+            #align(alignment, body)
+          ]
+        },
+      )
+
       // Headings, Header & Footer
       // imitate heading style from Alice's Adventures in a Differentiable Wonderland by S.Scardapane
       set heading(numbering: "1.")
       show heading.where(level: 1): it => block([
+        // reset sub-counters at each new section
+        #context counter(figure.where(kind: image)).update(0)
+        #context counter(figure.where(kind: table)).update(0)
+        #context counter(math.equation).update(0)
+
         #text(30pt)[
           #counter(heading).display("1")
           #h(0.8em)
@@ -408,12 +382,9 @@
           #it.body
         ]
         #v(0.75em)
-        // reset sub-counters at each new section
-        #context counter(figure.where(kind: image)).update(0)
-        #context counter(figure.where(kind: table)).update(0)
-        #context counter(math.equation).update(0)
       ])
 
+      counter(page).update(1)
       doc
     }
 
