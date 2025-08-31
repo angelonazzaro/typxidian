@@ -2,6 +2,14 @@
   title: none,
   subtitle: none,
   description: none,
+  abstract: none,
+  faculty: none,
+  department: none,
+  university: none,
+  academic-year: none,
+  degree: none,
+  logo: none,
+  citation: none,
   keywords: (),
   authors: (),
   supervisors: (),
@@ -9,6 +17,8 @@
   font: "Bitstream Charter",
   citation-style: "alphanumeric",
   bib-file: "bibliography.bib",
+  binding: left,
+  body-size: 12pt,
   before-content: none,
   after-content: none,
   is-thesis: false,
@@ -21,6 +31,13 @@
   /*** PREAMBLE - General styles ***/
   import "@preview/headcount:0.1.0": *
 
+  let blankpage() = {
+    set page(numbering: none, header: none)
+    pagebreak()
+    context counter(page).update(counter(page).at(here()).at(0) - 1)
+    pagebreak()
+  }
+
   // Color palette
   let purple = rgb("7952ee")
   let darkgray = rgb("#6d6e6d")
@@ -30,7 +47,17 @@
   let green = rgb("44cf6e")
 
   // Font sizes
+  let chapter-size = body-size * 2
+  let decrement-size = 2pt
 
+  let calc-font-size(base-size, level, decrement) = {
+    if level > 4 {
+      level = 4
+    }
+    return base-size - (level - 1) * decrement
+  }
+
+  // Citations, Links and References styling
   set cite(style: citation-style)
   show cite: set text(fill: purple)
 
@@ -43,7 +70,118 @@
     }
   }
 
+  // Page layout
+  set page(binding: binding, margin: (
+    top: 12%,
+    bottom: 12%,
+    inside: 12%,
+    outside: 15%,
+  ))
+
+  show heading: hd => {
+    let font-size = calc-font-size(chapter-size, hd.level, decrement-size)
+
+    let prev-headers = query(
+      selector(heading.where(level: 1)).before(here()),
+    )
+    let prev-header = prev-headers.at(prev-headers.len() - 2)
+    let next-header = query(
+      selector(heading.where(level: 1)).after(here()),
+    ).first()
+    let next-counter = counter(heading.where(level: 1))
+      .at(next-header.location())
+      .first()
+    let prev-counter = counter(heading).at(prev-header.location()).first()
+    let curr-counter = counter(heading).get().first()
+
+    if hd.level == 1 {
+      blankpage()
+
+      block(text(size: font-size, weight: "bold")[
+        #if (
+          (prev-counter != curr-counter and curr-counter > 0)
+            or curr-counter == 1
+        ) {
+          [#curr-counter]
+          h(1em)
+          box(baseline: 8pt, line(
+            length: 1.25em,
+            stroke: 1.25pt + darkgray,
+            angle: 90deg,
+          ))
+          h(1em)
+        }
+        #hd.body
+        #v(1.75em)
+      ])
+    } else if hd.level < 4 {
+      text(size: font-size, weight: "bold")[#hd]
+    } else {
+      // treat other headers as paragraphs
+      linebreak()
+      linebreak()
+      hd.body
+      [.]
+      h(0.5em)
+    }
+  }
+
+  set par(
+    spacing: 0.70em,
+    first-line-indent: 0.75em,
+    justify: true,
+  )
+
+  // Figures, Tables & Equations
+  show figure.caption: cp => {
+    v(0.65em)
+    cp
+  }
+  show figure: set block(above: 1.75em, below: 2em)
+  show math.equation: set block(above: 1.75em, below: 2em)
+  show math.equation.where(block: false): math.display
+
   /*** FRONT MATTER ***/
+
+  // Cover page
+
+  import "pages/cover.typ": coverpage
+
+  coverpage(
+    title: title,
+    subtitle: subtitle,
+    authors: authors,
+    supervisors: supervisors,
+    faculty: faculty,
+    department: department,
+    university: university,
+    academic-year: academic-year,
+    degree: degree,
+    logo: logo,
+    is-thesis: is-thesis,
+  )
+
+
+  if citation != none {
+    blankpage()
+    set text(20pt)
+    set page(margin: (right: 6.5em, left: 6.5em))
+    align(center + horizon, [
+      #citation
+    ])
+  }
+
+  set page(numbering: "i")
+  counter(page).update(1)
+
+  if abstract != none {
+    set align(center)
+    heading(level: 1, "Abstract")
+    abstract
+  }
+
+  // Toc
+  include "pages/toc.typ"
 
   /*** MAIN MATTER ***/
 
@@ -58,7 +196,7 @@
   {
     set page(
       numbering: "1",
-      header-ascent: 40%,
+      header-ascent: 45%,
       header: context {
         // mimic header style from 'Alice in a Differentiable Wonderland' by S.Scardapane
         let curr-page = counter(page).get().first()
@@ -72,7 +210,7 @@
         if curr-page > 1 and next-h1-page > 1 and next-h1-page != curr-page {
           set text(fill: darkgray)
 
-          let body = block(inset: 0pt, spacing: 0pt, [
+          let body = block(inset: 0pt, spacing: 0pt, width: 100%, [
             #if calc.even(curr-page) {
               let header-title = query(selector(heading).before(here()))
                 .last()
@@ -85,12 +223,13 @@
 
               [Chapter #counter(heading).at(header.location()).at(0): #header.body #h(1fr) #curr-page]
             }
-
-            #box(line(length: 100%, stroke: 0.2pt))
           ])
 
           let alignment = if calc.even(curr-page) { right } else { left }
-          align(alignment, body)
+          align(alignment, box([#body #v(0.9em) #line(
+              length: 100%,
+              stroke: 0.2pt,
+            )]))
         }
       },
     )
@@ -122,6 +261,7 @@
     bib
   }
 
+  set page(numbering: "1")
   bibliography(bib-file)
 
   if after-content != none {
@@ -129,6 +269,7 @@
   }
 
   if include-credits != none {
+    set page(numbering: none)
     pagebreak()
   }
 }
