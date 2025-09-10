@@ -34,7 +34,7 @@
   let blankpage() = {
     set page(numbering: none, header: none)
     pagebreak()
-    context counter(page).update(counter(page).at(here()).at(0) - 1)
+    // context counter(page).update(counter(page).at(here()).at(0) - 1)
     pagebreak()
   }
 
@@ -172,7 +172,7 @@
   }
 
   set page(numbering: "i")
-  counter(page).update(1)
+  counter(page).update(0)
 
   if abstract != none {
     set align(center)
@@ -182,6 +182,9 @@
 
   // Toc
   include "pages/toc.typ"
+
+  // Glossary
+  include "pages/glossary.typ"
 
   /*** MAIN MATTER ***/
 
@@ -233,7 +236,7 @@
         }
       },
     )
-    counter(page).update(1)
+    counter(page).update(0)
 
     doc
   }
@@ -271,5 +274,16 @@
   if include-credits != none {
     set page(numbering: none)
     pagebreak()
+    set page(margin: (top: 15em))
+
+    align(center + horizon, [
+      *This document was written using _TypXidian_*,
+      a Typst template inspired by Obsidian. \ If you'd
+      like to contribute to the project, please open
+      an issue or a pull request on our github repository.
+
+      #v(0.75em)
+      #link("https://github.com/angelonazzaro/typxidian")[Github Repository.]
+    ])
   }
 }

@@ -2,3 +2,6 @@
 #import "@preview/booktabs:0.0.4" // booktabs-like tables
 #import "@preview/wrap-it:0.1.1" // wrap figures around text
 #import "@preview/subpar:0.2.2" // create subfigures
+#import "@preview/headcount:0.1.0": *
+#import "@preview/glossarium:0.5.9": gls, make-glossary, glspl, print-glossary, register-glossary
+

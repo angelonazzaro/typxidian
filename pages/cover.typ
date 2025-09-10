@@ -36,7 +36,7 @@
     grid(
       columns: (1fr,) * ncols,
       row-gutter: 15pt,
-      ..authors.map(author => [#upper(author)])
+      ..authors.map(author => [#text(size: 14pt, upper(author))])
     )
   } else {
     let authors-title = if is-thesis {
@@ -60,7 +60,7 @@
           #stack(
             dir: ttb,
             spacing: 12pt,
-            ..supervisors.map(s => [#s]),
+            ..supervisors.map(s => [#text(size: 14pt, s)]),
           )
         ]),
       ),
@@ -73,7 +73,7 @@
           #stack(
             dir: ttb,
             spacing: 12pt,
-            ..authors.map(a => [#a]),
+            ..authors.map(a => [#text(size: 14pt, a)]),
           )
         ]),
       ),
