@@ -25,7 +25,7 @@ To use this package just add the following code to your [Typst](https://github.c
 )
 ```
 
-More information on how to use the template can be found in [main.pdf](https://github.com/angelonazzaro/typxidian).
+More information on how to use the template can be found in [main.pdf]([https://github.com/angelonazzaro/typxidian](https://github.com/angelonazzaro/typxidian/blob/main/main.pdf)).
 
 ## Notes
 
