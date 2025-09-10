@@ -14,19 +14,19 @@
   set page(numbering: none)
   set align(center)
 
-  text(30pt, weight: "bold")[#title]
+  text(32pt, weight: "bold")[#title]
 
   if subtitle != none {
     linebreak()
-    v(0.75em)
-    text(21pt)[#subtitle]
+    v(1em)
+    text(18pt)[#subtitle]
   }
 
   if logo == none {
-    logo = image("../assets/figures/logo.svg", width: 32.5%)
+    logo = image("../assets/figures/logo.svg", width: 40%)
   }
 
-  block(above: 3em, below: 3em, logo)
+  block(above: 4em, below: 4em, logo)
 
   set text(16pt)
 
@@ -87,5 +87,7 @@
   linebreak()
   strong(degree)
   v(3em)
-  [Academic year #academic-year]
+  if academic-year != none { 
+    [Academic year #academic-year]
+  }
 }

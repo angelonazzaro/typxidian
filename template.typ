@@ -29,7 +29,8 @@
   set text(lang: lang, font: font)
 
   /*** PREAMBLE - General styles ***/
-  import "@preview/headcount:0.1.0": *
+  import "dependencies.typ": booktabs-default-table-style, dependent-numbering, reset-counter
+  show: booktabs-default-table-style
 
   let blankpage() = {
     set page(numbering: none, header: none)
@@ -48,7 +49,7 @@
 
   // Font sizes
   let chapter-size = body-size * 2
-  let decrement-size = 2pt
+  let decrement-size = 6pt
 
   let calc-font-size(base-size, level, decrement) = {
     if level > 4 {
@@ -56,16 +57,30 @@
     }
     return base-size - (level - 1) * decrement
   }
+  
+  let paragraph-counter = counter("paragraph")
 
   // Citations, Links and References styling
   set cite(style: citation-style)
   show cite: set text(fill: purple)
+  show ref: set text(fill: purple)
+ 
+  // Custom ref for heading from 4 and above 
+  show ref: it => context {
+    let el = it.element
+    if el != none and el.func() == heading and el.level >= 4{
+      [Paragraph #paragraph-counter.display(dependent-numbering("1.1"))]
+    } else {
+      it
+    }
+  }
 
   show link: it => {
     if type(it.dest) == str {
       // ext link
       text(fill: blue)[#underline(it.body)]
     } else {
+      // text(fill: purple, it.body)
       it.body
     }
   }
@@ -116,13 +131,11 @@
       ])
     } else if hd.level < 4 {
       text(size: font-size, weight: "bold")[#hd]
+      v(0.35em)
     } else {
       // treat other headers as paragraphs
       linebreak()
-      linebreak()
-      hd.body
-      [.]
-      h(0.5em)
+      box(block([#hd.body. #h(0.35em) #paragraph-counter.step()]))
     }
   }
 
@@ -161,11 +174,10 @@
     is-thesis: is-thesis,
   )
 
-
   if citation != none {
     blankpage()
-    set text(20pt)
-    set page(margin: (right: 6.5em, left: 6.5em))
+    set text(16pt)
+    set page(margin: (right: 7em, left: 7em))
     align(center + horizon, [
       #citation
     ])
@@ -179,7 +191,11 @@
     heading(level: 1, "Abstract")
     abstract
   }
-
+  
+  if before-content != none {
+    before-content
+  }
+  
   // Toc
   include "pages/toc.typ"
 
@@ -192,7 +208,10 @@
   set heading(numbering: "1.1")
   set figure(numbering: dependent-numbering("1.1", levels: 1))
   set math.equation(numbering: dependent-numbering("(1.1)", levels: 1))
-
+  
+  show heading.where(level: 4): set heading(numbering: dependent-numbering("1.1", levels: 1))
+    
+  show heading: reset-counter(paragraph-counter, levels: 1)
   show heading: reset-counter(counter(figure))
   show heading: reset-counter(counter(math.equation))
 
@@ -215,9 +234,7 @@
 
           let body = block(inset: 0pt, spacing: 0pt, width: 100%, [
             #if calc.even(curr-page) {
-              let header-title = query(selector(heading).before(here()))
-                .last()
-                .body
+              let header-title = query(selector(heading.where(level: 1)).before(here())).last().body
               [#curr-page #h(1fr) #header-title]
             } else {
               let header = query(

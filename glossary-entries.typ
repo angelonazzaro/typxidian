@@ -1,15 +1,13 @@
 #let glossary-entry-list = (
   (
-    key: "cnn",
-    short: "CNN",
-    long: "Convolutional Neural Network",
-    description: "A neural network architecture based on the convolution operator.",
+    key: "wip",
+    short: "WIP",
+    long: "Work In Progress",
   ),
   (
-      key: "vnn",
-      short: "VNN",
-      long: "Vonvolutional Neural Network",
-      description: "A neural network architecture based on the convolution operator.",
-    )
-  // Add more terms
+    key: "ai",
+    short: "AI",
+    long: "Artifical Intelligence",
+  )
+ // Add more terms
 )
