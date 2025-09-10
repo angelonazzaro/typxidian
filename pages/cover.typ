@@ -1,84 +1,93 @@
 #let coverpage(
   title: none,
   subtitle: none,
+  department: none,
+  faculty: none,
+  university: none,
+  academic-year: none,
+  degree: none,
+  logo: none,
   authors: (),
   supervisors: (),
-  logo: none,
-  academic-year: none,
+  is-thesis: false,
 ) = {
-  set page(margin: (top: 4em, bottom: 1em))
+  set page(numbering: none)
   set align(center)
-  set text(32pt, weight: "bold")
-  upper(title)
 
-  linebreak()
-
-  set text(weight: "regular")
+  text(32pt, weight: "bold")[#title]
 
   if subtitle != none {
-    v(0.25em)
-    set text(22pt)
-    subtitle
+    linebreak()
+    v(1em)
+    text(18pt)[#subtitle]
   }
 
-  // TODO: find a way to use figure_dir without the need to write the full path everytime
   if logo == none {
-    logo = "../assets/figures/logo.svg"
+    logo = image("../assets/figures/logo.svg", width: 40%)
   }
 
-  image(logo, width: 50%)
+  block(above: 4em, below: 4em, logo)
 
-  set text(18pt)
+  set text(16pt)
 
-  v(0.35em)
-
-  if authors.len() > 0 and supervisors.len() == 0 {
+  if supervisors.len() == 0 and authors.len() > 0 {
     let ncols = calc.max(calc.div-euclid(authors.len(), 3), 1)
 
     grid(
       columns: (1fr,) * ncols,
       row-gutter: 15pt,
-      ..authors.map(author => [#upper(author)])
+      ..authors.map(author => [#text(size: 14pt, upper(author))])
     )
   } else {
-    set text(15pt)
+    let authors-title = if is-thesis {
+      if authors.len() > 1 { text("CANDIDATES") } else { text("CANDIDATE") }
+    } else {
+      if authors.len() > 1 { text("AUTHORS") } else { text("AUTHOR") }
+    }
 
+    let sups-title = if supervisors.len() > 1 { text("SUPERVISORS") } else {
+      text("SUPERVISOR")
+    }
     grid(
       columns: (1fr, 1fr),
-      gutter: 20pt,
-      row-gutter: 15pt,
       grid(
         columns: 1fr,
         row-gutter: 15pt,
-        [
-          *SUPERVISORS* \
+        align(left, [
+          #strong(sups-title)
+          #linebreak()
 
           #stack(
             dir: ttb,
-            spacing: 15pt,
-            ..supervisors.map(s => [#upper(s)]),
+            spacing: 12pt,
+            ..supervisors.map(s => [#text(size: 14pt, s)]),
           )
-        ],
+        ]),
       ),
       grid(
         columns: 1fr,
-        row-gutter: 15pt,
-        [
-          *AUTHORS* \
+        align(right, [
+          #strong(authors-title)
+          #linebreak()
 
           #stack(
             dir: ttb,
-            spacing: 15pt,
-            ..authors.map(a => [#upper(a)]),
+            spacing: 12pt,
+            ..authors.map(a => [#text(size: 14pt, a)]),
           )
-        ],
+        ]),
       ),
     )
   }
-
-  if academic-year != none {
-    v(4em)
-    set text(13pt)
-    [Academic year: #academic-year]
+  set text(14pt)
+  v(3em)
+  strong(faculty)
+  linebreak()
+  strong(department)
+  linebreak()
+  strong(degree)
+  v(3em)
+  if academic-year != none { 
+    [Academic year #academic-year]
   }
 }

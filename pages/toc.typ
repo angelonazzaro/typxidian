@@ -1,85 +1,38 @@
-#show outline.entry: set outline.entry(
-  fill: grid(
-    columns: 2,
-    gutter: 0pt,
-    repeat[~.], h(11pt),
-  ),
-)
+#{
+  show outline.entry.where(level: 1): set outline.entry(fill: none)
+  show outline.entry: set text(size: 13pt)
+  show outline.entry: set block(above: 12pt)
+  show outline.entry.where(level: 1): set text(weight: "bold", size: 14pt)
+  show outline.entry.where(level: 1): set block(above: 32pt)
 
+  heading(level: 1, "Table of Contents")
+  outline(depth: 3, indent: auto, title: none, target: heading)
+}
 
-// from haw-hamburg 0.6.1 template
-#show outline.entry.where(level: 1): set outline.entry(fill: none)
-#show outline.entry.where(level: 1): set text(weight: "bold")
-#show outline.entry.where(level: 1): set block(above: 14pt)
+#context {
+  if query(figure.where(kind: image)).len() > 0 {
+    heading(level: 1, "List of Figures")
+    outline(target: figure.where(kind: image), title: none)
+  }
+}
 
-#pagebreak()
+#context {
+  if query(figure.where(kind: table)).len() > 0 {
+    heading(level: 1, "List of Tables")
+    outline(target: figure.where(kind: table), title: none)
+  }
+}
 
-#outline(depth: 3, indent: auto)
+#context {
+  if query(figure.where(kind: "definitions")).len() > 0 {
+    heading(level: 1, "List of Definitions")
+    outline(target: figure.where(kind: "definitions"))
+  }
+}
 
-#pagebreak()
-
-#show outline.entry: set outline.entry(
-  fill: grid(
-    columns: 2,
-    gutter: 0pt,
-    repeat[~.], h(11pt),
-  ),
-)
-
-#outline(
-  title: [List of Figures],
-  target: figure.where(kind: image),
-  indent: auto,
-)
-
-#pagebreak()
-
-#show outline.entry: set outline.entry(
-  fill: grid(
-    columns: 2,
-    gutter: 0pt,
-    repeat[~.], h(11pt),
-  ),
-)
-
-
-#outline(
-  title: [List of Tables],
-  target: figure.where(kind: table),
-  indent: auto,
-)
-
-#pagebreak()
-
-#show outline.entry: set outline.entry(
-  fill: grid(
-    columns: 2,
-    gutter: 0pt,
-    repeat[~.], h(11pt),
-  ),
-)
-
-
-#outline(
-  title: [List of Definitions],
-  target: figure.where(kind: "definition"),
-  indent: auto,
-)
-
-#pagebreak()
-
-#show outline.entry: set outline.entry(
-  fill: grid(
-    columns: 2,
-    gutter: 0pt,
-    repeat[~.], h(11pt),
-  ),
-)
-
-
-#outline(
-  title: [List of Theorems],
-  target: figure.where(kind: "theorem"),
-  indent: auto,
-)
-
+#context {
+  if query(figure.where(kind: "theorems")).len() > 0 {
+    heading(level: 1, "List of Theorems")
+    outline(target: figure.where(kind: "theorems"))
+  }
+}
