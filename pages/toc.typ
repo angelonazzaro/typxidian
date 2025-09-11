@@ -2,7 +2,7 @@
   show outline.entry.where(level: 1): set outline.entry(fill: none)
   show outline.entry: set text(size: 13pt)
   show outline.entry: set block(above: 12pt)
-  show outline.entry.where(level: 1): set text(weight: "bold", size: 14pt)
+  show outline.entry.where(level: 1): set text(weight: "bold", size: 13pt)
   show outline.entry.where(level: 1): set block(above: 32pt)
 
   heading(level: 1, "Table of Contents")

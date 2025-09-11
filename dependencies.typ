@@ -6,6 +6,7 @@
 #import "@preview/glossarium:0.5.9": gls, make-glossary, glspl, print-glossary, register-glossary
 #import "@preview/fontawesome:0.6.0": fa-icon
 #import "@preview/decasify:0.10.1": sentencecase
+#import "colors.typ": purple
 
 #let subfigure(..args) = {
   subpar.grid(
@@ -22,16 +23,17 @@
 
 #let paragraph(title, body, label: none) = {
   figure(
-    align(left,  
-  block(
+    align(left,
+      block(
           width: 100%,
           [
             #text(weight: "bold", title). #h(0.05em) #body
           ]
-        )),
+      )
+    ),
     supplement: [Paragraph],
     kind: "paragraph",
-  ) 
+  )
 }
 
 /*** CALLOUTS ***/
@@ -65,7 +67,7 @@
     kind: kind,
     supplement: supplement,
     caption: none, // suppress default caption,
-    align(left, 
+    align(left,
     block(below: 1em, box(
       radius: 0.2em,
       inset: (top: 0.75em, bottom: 1em, right: 0.75em, left: 0.75em),
@@ -79,7 +81,7 @@
             icon
             h(0.15em)
           }
-          #title 
+          #title
         ]
         #block(text(fill: body-color)[#body], above: 1.2em)
       ],
@@ -129,9 +131,9 @@
 // generic function that builds a specific callout function
 #let make-callout-fn = (kind) => {
   let style = callout-styles.at(kind)
-  (body, 
-   title: style.title, 
-   icon: style.icon, 
+  (body,
+   title: style.title,
+   icon: style.icon,
    supplement: style.supplement) => {
     callout(
       body,
@@ -153,9 +155,9 @@
 #let danger = make-callout-fn("danger")
 
 // Definitions and Theorems
-#let math-callout(body, title, supplement, kind, stroke-fill) = {
+#let math-callout(body, title, supplement, kind, stroke-fill) = { 
   figure(
-    align(left, 
+    align(left,
     block(
       inset: (top: 0.75em - 0.7em, bottom: 0.75em - 0.45em, right: 0.75em, left: 0.75em),
       width: 100%,
@@ -169,8 +171,9 @@
       ],
     )),
     kind: kind,
+    caption: title,
     supplement: supplement,
- ) 
+ )
 }
 
 #let definition(

@@ -27,7 +27,6 @@
 )
 #import "@preview/metalogo:1.2.0": TeX, LaTeX 
 
-
 = Introduction
 
 The *TypXdian template* offers a clean, modern structure for academic documents.

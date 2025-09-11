@@ -30,6 +30,8 @@
 
   /*** PREAMBLE - General styles ***/
   import "dependencies.typ": booktabs-default-table-style, paragraph, dependent-numbering, reset-counter
+  import "colors.typ": *
+  
   show: booktabs-default-table-style
 
   let blankpage() = {
@@ -38,14 +40,6 @@
     // context counter(page).update(counter(page).at(here()).at(0) - 1)
     pagebreak()
   }
-
-  // Color palette
-  let purple = rgb("7952ee")
-  let darkgray = rgb("#6d6e6d")
-  let cyan = rgb("53dfdd")
-  let red = rgb("fb464c")
-  let orange = rgb("e9973f")
-  let green = rgb("44cf6e")
 
   // Font sizes
   let chapter-size = body-size * 2
@@ -69,7 +63,6 @@
       // ext link
       text(fill: blue)[#underline(it.body)]
     } else {
-      // text(fill: purple, it.body)
       it.body
     }
   }
@@ -78,8 +71,8 @@
   set page(binding: binding, margin: (
     top: 12%,
     bottom: 12%,
-    inside: 12%,
-    outside: 15%,
+    inside: 15%,
+    outside: 12%,
   ))
 
   show heading: hd => {
@@ -107,13 +100,13 @@
             or curr-counter == 1
         ) {
           [#curr-counter]
-          h(1em)
+          h(0.60em)
           box(baseline: 8pt, line(
             length: 1.25em,
             stroke: 1.25pt + darkgray,
             angle: 90deg,
           ))
-          h(1em)
+          h(0.60em)
         }
         #hd.body
         #v(1.75em)
@@ -126,10 +119,13 @@
       hd
     }
   }
-
+  
+  show list: set list(spacing: 0.85em, indent: 1.5em)
+  show list: set block(inset: (top: 0.35em, bottom: 0.35em))
+  
   set par(
-    spacing: 0.70em,
-    first-line-indent: 0.75em,
+    spacing: 0.7em,
+    leading: 0.7em,
     justify: true,
   )
 
@@ -138,6 +134,9 @@
     v(0.65em)
     cp
   }
+  show figure.caption.where(kind: "definition"): it => []
+  show figure.caption.where(kind: "theorem"): it => []
+  
   show figure: set block(above: 1.75em, below: 1.75em)
   show math.equation: set block(above: 1.75em, below: 2em)
   show math.equation.where(block: false): math.display
