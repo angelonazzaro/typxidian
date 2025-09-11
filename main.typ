@@ -1,5 +1,5 @@
 
-#import "template.typ": template
+#import "@preview/typxidian:0.1.0": template
 #import "dependencies.typ": cetz, subfigure, gls, glspl, wrap-content, wrap-top-bottom, paragraph, info, danger, tip, success, faq, definition, theorem
 
 #show: template.with(
