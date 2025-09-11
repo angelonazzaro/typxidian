@@ -29,7 +29,7 @@
   set text(lang: lang, font: font)
 
   /*** PREAMBLE - General styles ***/
-  import "dependencies.typ": booktabs-default-table-style, dependent-numbering, reset-counter
+  import "dependencies.typ": booktabs-default-table-style, paragraph, dependent-numbering, reset-counter
   show: booktabs-default-table-style
 
   let blankpage() = {
@@ -58,23 +58,12 @@
     return base-size - (level - 1) * decrement
   }
   
-  let paragraph-counter = counter("paragraph")
 
   // Citations, Links and References styling
   set cite(style: citation-style)
   show cite: set text(fill: purple)
   show ref: set text(fill: purple)
  
-  // Custom ref for heading from 4 and above 
-  show ref: it => context {
-    let el = it.element
-    if el != none and el.func() == heading and el.level >= 4{
-      [Paragraph #paragraph-counter.display(dependent-numbering("1.1"))]
-    } else {
-      it
-    }
-  }
-
   show link: it => {
     if type(it.dest) == str {
       // ext link
@@ -134,8 +123,7 @@
       v(0.35em)
     } else {
       // treat other headers as paragraphs
-      linebreak()
-      box(block([#hd.body. #h(0.35em) #paragraph-counter.step()]))
+      hd
     }
   }
 
@@ -150,7 +138,7 @@
     v(0.65em)
     cp
   }
-  show figure: set block(above: 1.75em, below: 2em)
+  show figure: set block(above: 1.75em, below: 1.75em)
   show math.equation: set block(above: 1.75em, below: 2em)
   show math.equation.where(block: false): math.display
 
@@ -207,11 +195,8 @@
   // Customize figures and equations to make counters depend on the current chapter number
   set heading(numbering: "1.1")
   set figure(numbering: dependent-numbering("1.1", levels: 1))
-  set math.equation(numbering: dependent-numbering("(1.1)", levels: 1))
-  
-  show heading.where(level: 4): set heading(numbering: dependent-numbering("1.1", levels: 1))
+  set math.equation(numbering: dependent-numbering("(1.1)", levels: 1)) 
     
-  show heading: reset-counter(paragraph-counter, levels: 1)
   show heading: reset-counter(counter(figure))
   show heading: reset-counter(counter(math.equation))
 

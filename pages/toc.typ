@@ -11,28 +11,45 @@
 
 #context {
   if query(figure.where(kind: image)).len() > 0 {
-    heading(level: 1, "List of Figures")
-    outline(target: figure.where(kind: image), title: none)
+    set outline.entry(
+      fill: grid(
+          columns: 2,
+          gutter: 0pt,
+          repeat[~.], h(11pt),
+    ))
+    
+    heading("List of Figures", level: 1)
+    outline(
+      title: none,
+      indent: auto,
+      target: figure.where(kind: image),
+    )
   }
 }
 
 #context {
-  if query(figure.where(kind: table)).len() > 0 {
+  if query(figure.where(kind: table)).len() > 0 { 
+    set outline.entry(
+          fill: grid(
+              columns: 2,
+              gutter: 0pt,
+              repeat[~.], h(11pt),
+        ))
     heading(level: 1, "List of Tables")
-    outline(target: figure.where(kind: table), title: none)
+    outline(target: figure.where(kind: table), title: none, indent: auto)
   }
 }
 
 #context {
-  if query(figure.where(kind: "definitions")).len() > 0 {
+  if query(figure.where(kind: "definition")).len() > 0 { 
     heading(level: 1, "List of Definitions")
-    outline(target: figure.where(kind: "definitions"))
+    outline(target: figure.where(kind: "definition"), title: none, indent: auto)
   }
 }
 
 #context {
-  if query(figure.where(kind: "theorems")).len() > 0 {
+  if query(figure.where(kind: "theorem")).len() > 0 {
     heading(level: 1, "List of Theorems")
-    outline(target: figure.where(kind: "theorems"))
+    outline(target: figure.where(kind: "theorem"), title: none)
   }
 }

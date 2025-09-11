@@ -1,6 +1,6 @@
 
 #import "template.typ": template
-#import "dependencies.typ": cetz, subfigure, gls, glspl, booktabs-default-table-style, wrap-content, wrap-top-bottom
+#import "dependencies.typ": cetz, subfigure, gls, glspl, wrap-content, wrap-top-bottom, paragraph, info, danger, tip, success, faq, definition, theorem
 
 #show: template.with(
   title: [TypXdian],
@@ -30,7 +30,12 @@
 
 = Introduction
 
-The *TypXdian template* offers a clean, modern structure for academic documents. It is heavily inspired by Obsidian’s design principles, while the style of headers, headings, and citations takes inspiration from @scardapane2024alicesadventuresdifferentiablewonderland. This chapter introduces the general layout of the template and demonstrates how it can be configured through parameters.
+The *TypXdian template* offers a clean, modern structure for academic documents.
+It is heavily inspired by Obsidian’s design principles, while the style of
+headers, headings, and citations takes inspiration from
+@scardapane2024alicesadventuresdifferentiablewonderland. This chapter introduces
+the general layout of the template and demonstrates how it can be configured
+through parameters.
 
 == Front Matter
 
@@ -83,7 +88,6 @@ Each top-level heading (`=`) starts on a fresh page, separating major chapters. 
 The back matter includes automatically generated references and a credits page. You can disable the credits page by setting the `include-credits` parameter. 
 
 = Figures, Equations, and Paragraphs
-
 Figures (images, tables and custom environments), equations, and paragraphs are all numbered within their section to ensure consistent cross-referencing.
 
 == Subfigures
@@ -118,20 +122,48 @@ outputs:
 )
 
 == Paragraphs
-Headings at or deeper than level $4$ are styled as standalone paragraphs, mimicking LaTeX’s `\paragraph{}` command.
-For example, this code:
+The `paragraph` function enables you to create paragraphs similar to #LaTeX's `\paragraph{}{}` command.
+For instance, this code:
 ```typst
-==== Paragraph test
+#paragraph([Paragraph test], [I am the body of this paragraph])
 <par-test>
-I am the body of this paragraph.
 ```
 outputs:
-==== Paragraph test
+#paragraph([Paragraph test], [I am the body of this paragraph])
 <par-test>
-I am the body of this paragraph.
-#linebreak()
-Each labeled paragraph can be referenced like any other element, e.g. @par-test.
+Each labeled paragraph can be referenced like any other element, e.g. @par-test. Keep in mind that the paragraph functions adds vertical space before and after the content.
 
 = Callouts, Definitions and Theorems
 
-Obisidian-like callouts, definitions and theorems are a work in progress and will be released soon.
+== Callouts 
+
+Obisidian-like callouts are available through the following functions: `info`, `danger`, `tip`, `success` and `faq`.
+
+#info([#lorem(25)])
+<info>
+#faq([#lorem(25)])
+#tip([#lorem(25)])
+#danger([#lorem(25)])
+#success([#lorem(25)])
+
+Each callout type is referenceable, just like any other figure environment. For
+instance, if I were to add the `<info>` label to the first info callout, I would
+be able to reference it as @info.
+
+== Definitions and Theorems
+Definitions and theorems are inspired by @scardapane2024alicesadventuresdifferentiablewonderland. You can access either of them through the `definition` and `theorem` functions.
+
+An example of definition would be the following:
+
+#definition([Machine Learning is a subfield of #gls("ai") concerned with the
+development of algorithms able to learn from data.], title: [Machine Learning])
+<def1>
+
+An example of theorem would be the follwoing:
+
+#theorem([The universal approximation theorems state that neural networks with a
+certain structure can, in principle, approximate any continuous function to any
+desired degree of accuracy.], title: [Universal Approximation Theorem])
+<th1>
+
+Each environment is also referenceable, e.g. @def1, @th1.
