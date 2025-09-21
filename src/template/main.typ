@@ -1,5 +1,5 @@
-#import "src/preview/typxidian.typ": *
-#import "@preview/metalogo:1.2.0": LaTeX
+#import "@preview/typxidian:0.1.1": *
+#import "abbreviations.typ": abbreviations
 
 #show: template.with(
   title: [TypXidian],
@@ -15,11 +15,14 @@
   quote: [
     #lorem(20)
     \ \ #align(right, [-- John Doe])
-  ]
+  ],
+  bib: bibliography("bibliography.bib"),
+  abbreviations: abbreviations,
+
 )
 
 = Introduction
-*TypXidian* is a template thought for academic writing, mainly for bachelor's and master's thesis but can be also used for project/lab reports.
+*TypXidian* is a template for academic writing, such as theses, dissertations, and reports.  
 
 TypXidian comes with custom environments inspired by #link("https://obsidian.md/")[Obsidian] callout boxes. Some of the environments and styling choices, such as: headers and citation style, are inspired by @scardapane2024alicesadventuresdifferentiablewonderland. 
 #linebreak()
@@ -95,19 +98,19 @@ will output the following Figure:
 #subfigure(
   columns: (1fr, 2fr),
   figure(
-    image("assets/dog.jpg"),
+    image("figures/dog.jpg"),
     caption: [This is a dog.] 
   ),
   <dog>,
   figure(
-    image("assets/cat.jpg"),
+    image("figures/cat.jpg"),
     caption: [This is a cat.]
   ),
   <cat>,
   caption: [This is a figure with subfigures.]
 )
 == Paragraphs
-The `paragraph(title, body)` function mimics #LaTeX's `\paragraph{}` command. For instance, the following code:
+The `paragraph(title, body)` function mimics LaTeX's `\paragraph{}` command. For instance, the following code:
 ```typ
 #paragraph([This is a paragraph], [#lorem(25)])
 <par>

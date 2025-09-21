@@ -1,7 +1,5 @@
-#import "../dependencies/typxidian.typ": *
+#import "dependencies.typ": *
 #import "lib.typ": *
-
-#import "abbreviations.typ": abbreviations
 
 #let template(
   title: none,
@@ -28,7 +26,8 @@
   image-supplement: [Figure],
   table-supplement: [Table],
   citation-style: "alphanumeric",
-  bib-file: "bibliography.bib",
+  bib: [],
+  abbreviations: (),
   before-content: none,
   after-content: none,
   doc,
@@ -227,7 +226,7 @@
     bib
   }
 
-  bibliography(bib-file)
+  bib
 
   if after-content != none {
     after-content

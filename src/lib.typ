@@ -1,4 +1,4 @@
-#import "../dependencies/typxidian.typ": dependent-numbering, fa-icon, sentencecase, subpar
+#import "dependencies.typ": dependent-numbering, fa-icon, sentencecase, subpar
 
 #let sizes = (
   chapter: 26pt,
