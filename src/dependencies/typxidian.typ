@@ -5,5 +5,5 @@
 #import "@preview/headcount:0.1.0": * // heading dependent counters
 #import "@preview/glossarium:0.5.9": gls, make-glossary, glspl, print-glossary, register-glossary
 #import "@preview/fontawesome:0.6.0": fa-icon
-#import "@preview/acrostiche:0.6.0": *
 #import "@preview/decasify:0.10.1": sentencecase
+#import "./acrostiche.typ": *

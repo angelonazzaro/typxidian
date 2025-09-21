@@ -15,6 +15,7 @@
 #lorem(25)~@vaswani2023attentionneed.
 
 #lorem(20)
+#acr("AI")
 - First item
   -  aaa
   - bbb

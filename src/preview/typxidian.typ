@@ -22,6 +22,9 @@
   paper-size: "a4",
   font: "Times New Roman",
   lang: "en",
+  cite-color: colors.purple,
+  ref-color: colors.purple,
+  link-color: blue,
   image-supplement: [Figure],
   table-supplement: [Table],
   citation-style: "alphanumeric",
@@ -35,13 +38,13 @@
 
   set cite(style: citation-style)
 
-  show cite: set text(fill: colors.purple)
-  show ref: set text(fill: colors.purple)
+  show cite: set text(fill: cite-color)
+  show ref: set text(fill: ref-color)
 
   show link: it => {
     if type(it.dest) == str {
       // ext link
-      text(fill: blue)[#underline(it.body)]
+      text(fill: link-color)[#underline(it.body)]
     } else {
       it
     }
@@ -158,7 +161,7 @@
   include "pages/toc.typ"
 
   init-acronyms(abbreviations)
-  print-index(sorted: "down", title: "List of Abbreviations", outlined: true, used-only: true)
+  print-index(sorted: "up", row-gutter: 20pt, title: "List of Abbreviations", outlined: true, used-only: true)
 
   set page(numbering: "1", header-ascent: 35%, header: context {
     // mimic header style from 'Alice in a Differentiable Wonderland' by S.Scardapane
