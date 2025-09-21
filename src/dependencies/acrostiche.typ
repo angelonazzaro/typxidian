@@ -61,8 +61,11 @@
 
 #let highlight-words(str) = {
   let words = str.split()
-  for word in words {
-    [#strong(word.at(0))#word.slice(1) ]
+  for i in range(words.len()) {
+    [#strong(words.at(i).at(0))#words.at(i).slice(1)]
+    if i + 1 < words.len() {
+      [ ]
+    }
   }
 }
 

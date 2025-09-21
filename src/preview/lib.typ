@@ -36,14 +36,11 @@
   ),
 )
 
-#let blankpage() = context {
-  // set page(numbering: none, header: none)
+#let blankpage() =  context {
+  set page(numbering: none, header: none)
   pagebreak()
-  // align(center + horizon, [
-  //   #set text(weight: "regular", fill: colors.darkgray, size: sizes.subsection)
-  //   #emph([This page has been intentionally left blank.])
-  // ])
-  // context counter(page).update(counter(page).at(here()).at(0) - 1)
+  pagebreak()
+  counter(page).update(n => n - 1)
 }
 
 #let subfigure(..args) = {
@@ -71,7 +68,6 @@
     kind: "paragraph",
   )
 }
-
 
 #let callout(
   body,

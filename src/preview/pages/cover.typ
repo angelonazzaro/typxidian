@@ -50,33 +50,29 @@
     }
     grid(
       columns: (1fr, 1fr),
-      grid(
+      align(left, [
+
+        #strong(sups-title)
+        #v(0.35em)
+      ]),
+      align(right, [
+
+        #strong(authors-title)
+        #v(0.35em)
+      ]),
+    )
+    grid(
+      columns: (1fr, 1fr),
+      align(left, grid(
         columns: 1fr,
         row-gutter: 15pt,
-        align(left, [
-          #strong(sups-title)
-          #v(0.35em)
+        ..supervisors.map(s => [#text(size: 14pt, s)#linebreak()])
+      )),
 
-          #stack(
-            dir: ttb,
-            spacing: 12pt,
-            ..supervisors.map(s => [#text(size: 14pt, s)]),
-          )
-        ]),
-      ),
-      grid(
+      align(right, grid(
         columns: 1fr,
-        align(right, [
-          #strong(authors-title)
-          #v(0.35em)
-
-          #stack(
-            dir: ttb,
-            spacing: 12pt,
-            ..authors.map(a => [#text(size: 14pt, a)]),
-          )
-        ]),
-      ),
+        ..authors.map(a => [#text(size: 14pt, a)#linebreak()]),
+      )),
     )
   }
   set text(14pt)

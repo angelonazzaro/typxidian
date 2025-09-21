@@ -118,6 +118,7 @@
   set page(numbering: "i")
 
   if abstract != none {
+    blankpage()
     set align(center)
 
     text(size: sizes.chapter, heading(level: 1, "Abstract", numbering: none))
@@ -151,7 +152,7 @@
     } else {
       set text(size: if hd.level == 1 { sizes.section } else { sizes.subsection })
       block(inset: (top: 0.5em, bottom: 0.5em), {
-        hd.numbering
+        context counter(heading).display()
         h(0.75em)
         hd.body
       })
@@ -168,7 +169,15 @@
     let curr-page = counter(page).get().first()
     // check if there is a one-level heading on the same page, if so dont's display the
     // header
-    let next-h1 = query(selector(heading.where(level: 1)).after(here())).first()
+    let next-h1 = query(selector(heading.where(level: 1)).after(here()))
+    
+    // in blank page
+    if next-h1 == none or next-h1.len() == 0{
+     return; 
+    }
+    
+    next-h1 = next-h1.first()
+    
     let next-h1-page = counter(page).at(next-h1.location()).first()
 
     if curr-page > 1 and next-h1-page > 1 and next-h1-page != curr-page {
