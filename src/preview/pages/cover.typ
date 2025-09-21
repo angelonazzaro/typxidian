@@ -7,12 +7,12 @@
   academic-year: none,
   degree: none,
   logo: none,
-  authors: (),
   supervisors: (),
-  is-thesis: false,
+  authors: (),
+  is-thesis: true,
 ) = {
   set page(numbering: none)
-  set align(center)
+  set align(center + horizon)
 
   text(32pt, weight: "bold")[#title]
 
@@ -23,7 +23,7 @@
   }
 
   if logo == none {
-    logo = image("../assets/figures/logo.svg", width: 40%)
+    logo = image("../figures/logo.svg", width: 37%)
   }
 
   block(above: 4em, below: 4em, logo)
@@ -55,7 +55,7 @@
         row-gutter: 15pt,
         align(left, [
           #strong(sups-title)
-          #linebreak()
+          #v(0.35em)
 
           #stack(
             dir: ttb,
@@ -68,7 +68,7 @@
         columns: 1fr,
         align(right, [
           #strong(authors-title)
-          #linebreak()
+          #v(0.35em)
 
           #stack(
             dir: ttb,
@@ -86,8 +86,11 @@
   strong(department)
   linebreak()
   strong(degree)
+  linebreak()
+  strong(university)
   v(3em)
-  if academic-year != none { 
+
+  if academic-year != none {
     [Academic year #academic-year]
   }
 }
