@@ -7,12 +7,12 @@
   academic-year: none,
   degree: none,
   logo: none,
-  authors: (),
   supervisors: (),
-  is-thesis: false,
+  authors: (),
+  is-thesis: true,
 ) = {
   set page(numbering: none)
-  set align(center)
+  set align(center + horizon)
 
   text(32pt, weight: "bold")[#title]
 
@@ -23,7 +23,7 @@
   }
 
   if logo == none {
-    logo = image("../assets/figures/logo.svg", width: 40%)
+    logo = image("../figures/logo.svg", width: 37%)
   }
 
   block(above: 4em, below: 4em, logo)
@@ -50,33 +50,29 @@
     }
     grid(
       columns: (1fr, 1fr),
-      grid(
+      align(left, [
+
+        #strong(sups-title)
+        #v(0.35em)
+      ]),
+      align(right, [
+
+        #strong(authors-title)
+        #v(0.35em)
+      ]),
+    )
+    grid(
+      columns: (1fr, 1fr),
+      align(left, grid(
         columns: 1fr,
         row-gutter: 15pt,
-        align(left, [
-          #strong(sups-title)
-          #linebreak()
+        ..supervisors.map(s => [#text(size: 14pt, s)#linebreak()])
+      )),
 
-          #stack(
-            dir: ttb,
-            spacing: 12pt,
-            ..supervisors.map(s => [#text(size: 14pt, s)]),
-          )
-        ]),
-      ),
-      grid(
+      align(right, grid(
         columns: 1fr,
-        align(right, [
-          #strong(authors-title)
-          #linebreak()
-
-          #stack(
-            dir: ttb,
-            spacing: 12pt,
-            ..authors.map(a => [#text(size: 14pt, a)]),
-          )
-        ]),
-      ),
+        ..authors.map(a => [#text(size: 14pt, a)#linebreak()]),
+      )),
     )
   }
   set text(14pt)
@@ -86,8 +82,11 @@
   strong(department)
   linebreak()
   strong(degree)
+  linebreak()
+  strong(university)
   v(3em)
-  if academic-year != none { 
+
+  if academic-year != none {
     [Academic year #academic-year]
   }
 }

@@ -1,44 +1,41 @@
-
-#import "@preview/typxidian:0.1.0": template
-#import "dependencies.typ": cetz, subfigure, gls, glspl, wrap-content, wrap-top-bottom, paragraph, info, danger, tip, success, faq, definition, theorem
+#import "src/preview/typxidian.typ": *
+#import "@preview/metalogo:1.2.0": LaTeX
 
 #show: template.with(
-  title: [TypXdian],
-  subtitle: [A modern Typst template inspired by Obsidian],
-  authors: ("Angelo Nazzaro",),
-  supervisors: ("Prof. Mario Rossi", "Prof. Giuseppe Verdi"),
-  abstract: [
-    This is Typst template inspired by Obsidian callouts and color palette. 
-    The template is designed for note taking and thesis/reports writing. This document serves both as a showcase example and as documentation on how to use the template.
-  ],
+  title: [TypXidian],
+  authors: ("Giuseppe Verdi", ),
+  supervisors: ("Prof. Mario Rossi", "Prof. Mario Bianchi"),
+  subtitle: [A template for academic documents written in Typst],
   university: [University of Salerno],
-  department: [Department of Computer Science],
   faculty: [Faculty of Science],
-  degree: [Master's Degree in Computer Science],
-  academic-year: [2024/2025],
-  citation: [
-    "_*Dreams*. Each man longs to pursue his dream. 
-     Each man is tortured by this dream, but the dream gives meaning to his life. 
-     Even if the dream ruins his life, man cannot allow himself to leave it behind.
-     In this world, is man ever able to possess anything more solid, than a dream?_" 
-    #align(right, [_#sym.tilde.op Kentaro Miura_])
-],
-  is-thesis: true,
+  degree: [Master's Degree in Machine Learning & Data Science],
+  department: [Departmenent of Computer Science],
+  academic-year: [2025/2026],
+  abstract: lorem(150), 
+  quote: [
+    #lorem(20)
+    \ \ #align(right, [-- John Doe])
+  ]
 )
-#import "@preview/metalogo:1.2.0": TeX, LaTeX 
 
 = Introduction
+*TypXidian* is a template thought for academic writing, mainly for bachelor's and master's thesis but can be also used for project/lab reports.
 
-The *TypXdian template* offers a clean, modern structure for academic documents.
-It is heavily inspired by Obsidian’s design principles, while the style of
-headers, headings, and citations takes inspiration from
-@scardapane2024alicesadventuresdifferentiablewonderland. This chapter introduces
-the general layout of the template and demonstrates how it can be configured
-through parameters.
+TypXidian comes with custom environments inspired by #link("https://obsidian.md/")[Obsidian] callout boxes. Some of the environments and styling choices, such as: headers and citation style, are inspired by @scardapane2024alicesadventuresdifferentiablewonderland. 
+#linebreak()
+The purpose of this document is to act both as a showcase of the template and as documentation.
+TypXidian also comes with the following packages:
+- `cetz:0.4.2`
+- `booktabs:0.0.4`
+- `wrap-it:0.1.1`
+- `subpar:0.2.2`
+- `headcount:0.1.0`
+- `fontawesome:0.6.0`
+- `decasify:0.10.1`
+- a custom version of `acrostiche:0.6.0`
+You may directly use any function available in these packages .
 
-== Front Matter
-
-=== Cover Page
+== Cover Page
 The cover page supports two display modes:
 - *Authors-only view*: for reports, notes, or shorter projects;
 - *Supervisors + authors view*: for theses or dissertations.
@@ -47,122 +44,159 @@ You can switch between them by setting the `supervisors` parameter. If you pass 
 
 Additional metadata parameters include:
 - `university`: name of the university;
-- `logo`: university logo (defaults to `assets/figures/logo.svg`);
+- `logo`: university logo (defaults to `src/preview/figures/logo.svg`);
 - `academic-year`: the academic year, e.g. *2024/2025* (defaults to `none`);
 - `faculty`: the faculty name (defaults to `none`);
 - `department`: the department name (defaults to `none`);
 - `degree`: the degree program (defaults to `none`);
 - `is-thesis`: if `true`, the “AUTHOR(S)” label changes to “CANDIDATE(S)” (defaults to `false`).
 
-=== Abstract & Citation
-By setting the `abstract` and `citation` parameters, the template adds two additional pages *before* the table of contents. The abstract page summarizes the work, while the citation page provides an optional epigraph or quotation. The citation page does *not* appear in the table of contents.
+== Abstract & Citation
+By setting the `abstract` and `citation` parameters, the template adds two additional pages *before* the table of contents.  
 
-=== Table of Contents
-The table of contents automatically detects headings up to level $3$. It also supports dynamically generated:
-- List of Figures,
-- List of Tables,
-- List of Definitions (#gls("wip")),
-- List of Theorems (#gls("wip")).
+The citation page does *not* appear in the table of contents.
 
-=== Glossary
-Glossary terms can be referenced with explicit citation functions from the `glossarium` package:
-- `#gls("ai")` → renders the glossary entry for #gls("ai").
-- `#glspl("AI")` → renders the plural form (if defined).
+== Links, Citations and Refs Colors
+You may customize the links, citations and refs colors by respectively setting the `link-color`, `citation-color` and `ref-color`.
 
-Currently, direct referencing with `@ref` is not supported.
-
-=== Additional Content
+== Additional Content
 You may inject content directly via parameters:
 - `before-content`: material inserted between the abstract/citation and the table of contents (defaults to `none`);
-- `after-content`: material added immediately after the table of contents.
+- `after-content`: material added immediately after the table of contents (defaults to `none`);
 
 These are useful for dedicatory pages, acknowledgements, or institutional notices.
 
-== Main Matter
+= Figures, Tables, Paragraphs and Equations
 
-Each top-level heading (`=`) starts on a fresh page, separating major chapters. The heading and header styles are designed for clarity and are inspired by @scardapane2024alicesadventuresdifferentiablewonderland.
+Figures, tables, paragraphs and equations numbering is dependent on the current chapter. For instance, a figure under the 1st chapter will be numbered as 'Figure 1.X' and so on. On each chapter, the counter resets.
 
-== Back Matter
-
-The back matter includes automatically generated references and a credits page. You can disable the credits page by setting the `include-credits` parameter. 
-
-= Figures, Equations, and Paragraphs
-Figures (images, tables and custom environments), equations, and paragraphs are all numbered within their section to ensure consistent cross-referencing.
+The List of Figures and Tables are dynamic, meaning they will be appear only if there is at least an image or a table in the document.
 
 == Subfigures
-The template provides a wrapper around the `subpar` package to simplify subfigure handling. Use the `subfigure` function instead of `subpar.grid` to maintain numbering consistency.
-For example, this code:
-```typst
+
+To assure consisten numbering of subfigures, you must use the `subfigure(..args)` function which has the same signature as `subpar.grid`. For instance, the following code:
+```typ
 #subfigure(
-  columns: (1fr, 1fr),
+  columns: (1fr, 2fr),
   figure(
-    image("assets/figures/cat.jpg"),
-    caption: [This is a cat.],
+    image("assets/dog.jpg"),
+    caption: [This is a dog.] 
   ),
+  <dog>,
   figure(
-    image("assets/figures/dog.jpg"),
-    caption: [This is a dog.],
+    image("assets/cat.jpg"),
+    caption: [This is a cat.]
   ),
-  caption: [A cat and a dog.]
+  <cat>,
+  caption: [This is a figure with subfigures.]
 )
 ```
-outputs:
+will output the following Figure:
 #subfigure(
-  columns: (1fr, 1fr),
+  columns: (1fr, 2fr),
   figure(
-    image("assets/figures/cat.jpg", width: 150pt, height: 100pt),
-    caption: [This is a cat.],
+    image("assets/dog.jpg"),
+    caption: [This is a dog.] 
   ),
+  <dog>,
   figure(
-    image("assets/figures/dog.jpg", width: 150pt, height: 100pt),
-    caption: [This is a dog.],
+    image("assets/cat.jpg"),
+    caption: [This is a cat.]
   ),
-  caption: [A cat and a dog.]
+  <cat>,
+  caption: [This is a figure with subfigures.]
 )
-
 == Paragraphs
-The `paragraph` function enables you to create paragraphs similar to #LaTeX's `\paragraph{}{}` command.
-For instance, this code:
-```typst
-#paragraph([Paragraph test], [I am the body of this paragraph])
-<par-test>
+The `paragraph(title, body)` function mimics #LaTeX's `\paragraph{}` command. For instance, the following code:
+```typ
+#paragraph([This is a paragraph], [#lorem(25)])
+<par>
 ```
-outputs:
-#paragraph([Paragraph test], [I am the body of this paragraph])
-<par-test>
-Each labeled paragraph can be referenced like any other element, e.g. @par-test. Keep in mind that the paragraph functions adds vertical space before and after the content.
+will output:
+#paragraph([This is a paragraph], [#lorem(25)])
+<par>
+Paragraphs are also referenceable like any other figure environment: @par.
+= Callouts, Definitions, Theorems & Proofs
+Callouts environment can be used through any of the following functions: `info`, `danger`, `success`, `tip`, `faq`. 
+#info([
+  #lorem(25)
 
-= Callouts, Definitions and Theorems
+  $ x + y = integral_0^inf x y d x $
+  
+  #lorem(10)
+])
+#faq([
+  #lorem(25)
 
-== Callouts 
+  $ x + y = integral_0^inf x y d x $
+  
+  #lorem(10)
+])
+#tip([
+  #lorem(25)
 
-Obisidian-like callouts are available through the following functions: `info`, `danger`, `tip`, `success` and `faq`.
+  $ x + y = integral_0^inf x y d x $
+  
+  #lorem(10)
+])
+#success([
+  #lorem(25)
 
-#info([#lorem(25)])
-<info>
-#faq([#lorem(25)])
-#tip([#lorem(25)])
-#danger([#lorem(25)])
-#success([#lorem(25)])
+  $ x + y = integral_0^inf x y d x $
+  
+  #lorem(10)
+])
+#danger([
+  #lorem(25)
 
-Each callout type is referenceable, just like any other figure environment. For
-instance, if I were to add the `<info>` label to the first info callout, I would
-be able to reference it as @info.
+  $ x + y = integral_0^inf x y d x $
+  
+  #lorem(10)
+])
 
-== Definitions and Theorems
-Definitions and theorems are inspired by @scardapane2024alicesadventuresdifferentiablewonderland. You can access either of them through the `definition` and `theorem` functions.
+For each, you may customize the following parameters:
+- `title`: the title appearing next to the icon.
+- `icon`: the icon of the callout.
+- `fill`: background color.
+- `title-color`: title color.
+- `supplement`: the supplement for references as each callout can be referenced.
 
-An example of definition would be the following:
+Other three custom environments are also available for definitions, theorems and proofs:
+#definition([
+  #lorem(20)
 
-#definition([Machine Learning is a subfield of #gls("ai") concerned with the
-development of algorithms able to learn from data.], title: [Machine Learning])
-<def1>
+  $ x + y = 1 $
+])
 
-An example of theorem would be the follwoing:
+#theorem([
+  #lorem(20)
 
-#theorem([The universal approximation theorems state that neural networks with a
-certain structure can, in principle, approximate any continuous function to any
-desired degree of accuracy.], title: [Universal Approximation Theorem])
-<th1>
+  $ x + y = 1 $
+])
+<th-1>
 
-Each environment is also referenceable, e.g. @def1, @th1.
+#proof([
+  #lorem(20)
+
+  $ x + y = 1 $
+], [@th-1])
+
+For each, you may customize the following parameters:
+- `title`: the title appearing next to the icon.
+- `stroke-fill`: the fill of the column of the left.
+- `supplement`: the supplement for references as each math environment can be referenced.
+
+Definitions and theorems will be listed in the List of Definitions and List of Theorems respectively.
+
+= Showcase
+#acr("AI") #lorem(300)
+
+#paragraph([ML], [ 
+  #acr("ML") #lorem(15)
+])
+
+== Subsection
+#lorem(250)
+
+=== Subsubection
+#lorem(100)

@@ -1,19 +1,54 @@
-#import "@preview/cetz:0.4.2" // drawing inspired by tikz
-#import "@preview/booktabs:0.0.4": * // booktabs-like tables
-#import "@preview/wrap-it:0.1.1": wrap-content, wrap-top-bottom // wrap figures around text
-#import "@preview/subpar:0.2.2" // create subfigures
-#import "@preview/headcount:0.1.0": *
-#import "@preview/glossarium:0.5.9": gls, make-glossary, glspl, print-glossary, register-glossary
-#import "@preview/fontawesome:0.6.0": fa-icon
-#import "@preview/decasify:0.10.1": sentencecase
-#import "colors.typ": purple
+#import "../dependencies/typxidian.typ": dependent-numbering, fa-icon, sentencecase, subpar
+
+#let sizes = (
+  chapter: 26pt,
+  section: 16pt,
+  subsection: 14pt,
+  body: 10pt,
+)
+
+#let colors = (
+  purple: rgb("7e1dfb"),
+  darkgray: rgb("6d6e6d"),
+  cyan: rgb("53dfdd"),
+  red: rgb("fb464c"),
+  orange: rgb("e9973f"),
+  green: rgb("44cf6e"),
+  info: (
+    title: rgb("306bf6"),
+    bg: rgb("eaf0fb"),
+  ),
+  faq: (
+    title: rgb("dd7c2e"),
+    bg: rgb("fcf2ea"),
+  ),
+  tip: (
+    title: rgb("56bcbb"),
+    bg: rgb("eef8f8"),
+  ),
+  success: (
+    title: rgb("54b651"),
+    bg: rgb("eef8ec"),
+  ),
+  danger: (
+    title: rgb("d64043"),
+    bg: rgb("fbecee"),
+  ),
+)
+
+#let blankpage() =  context {
+  set page(numbering: none, header: none)
+  pagebreak()
+  pagebreak()
+  counter(page).update(n => n - 1)
+}
 
 #let subfigure(..args) = {
   subpar.grid(
     gutter: 1.5em,
     numbering: n => {
-        numbering("1.1", ..counter(heading.where(level: 1)).get(), n)
-      },
+      numbering("1.1", ..counter(heading.where(level: 1)).get(), n)
+    },
     numbering-sub-ref: (..n) => {
       numbering("1.1a", ..counter(heading.where(level: 1)).get(), ..n)
     },
@@ -21,37 +56,18 @@
   )
 }
 
-#let paragraph(title, body, label: none) = {
+#let paragraph(title, body) = {
   figure(
-    align(left,
-      block(
-          width: 100%,
-          [
-            #text(weight: "bold", title). #h(0.05em) #body
-          ]
-      )
-    ),
+    align(left, block(
+      width: 100%,
+      [
+        #text(weight: "bold", title). #h(0.05em) #body
+      ],
+    )),
     supplement: [Paragraph],
     kind: "paragraph",
   )
 }
-
-/*** CALLOUTS ***/
-
-#let info-title = rgb(48, 107, 246)
-#let info-bg = rgb(234, 240, 251)
-
-#let faq-title = rgb(221, 124, 46)
-#let faq-bg = rgb(252, 242, 234)
-
-#let tip-title = rgb(86, 188, 187)
-#let tip-bg = rgb(238, 248, 248)
-
-#let success-title = rgb(84, 182, 81)
-#let success-bg = rgb(238, 248, 236)
-
-#let danger-title = rgb(214, 64, 67)
-#let danger-bg = rgb(251, 236, 238)
 
 #let callout(
   body,
@@ -67,16 +83,14 @@
     kind: kind,
     supplement: supplement,
     caption: none, // suppress default caption,
-    align(left,
-    block(below: 1em, box(
+    align(left, block(below: 1em, box(
       radius: 0.2em,
       inset: (top: 0.75em, bottom: 1em, right: 0.75em, left: 0.75em),
       width: 100%,
       fill: fill,
       clip: true,
       [
-        // Title with supplement + numbering
-        #text(fill: title-color, weight: "bold", size: 12.5pt)[
+        #text(fill: title-color, weight: "bold", size: (sizes.body + 1pt))[
           #if icon != none {
             icon
             h(0.15em)
@@ -85,8 +99,8 @@
         ]
         #block(text(fill: body-color)[#body], above: 1.2em)
       ],
-    )),
-  ))
+    ))),
+  )
 }
 
 // central registry for callout styles
@@ -94,47 +108,44 @@
   info: (
     title: "Info",
     icon: fa-icon("info-circle"),
-    fill: info-bg.saturate(5%),
-    title-color: info-title,
+    fill: colors.info.bg.saturate(5%),
+    title-color: colors.info.title,
     supplement: [Info.],
   ),
   faq: (
     title: "FAQ",
     icon: fa-icon("question-circle"),
-    fill: faq-bg.saturate(5%),
-    title-color: faq-title,
+    fill: colors.faq.bg.saturate(5%),
+    title-color: colors.faq.title,
     supplement: [FAQ.],
   ),
   tip: (
     title: "Tip",
     icon: fa-icon("lightbulb"),
-    fill: tip-bg.saturate(5%),
-    title-color: tip-title,
+    fill: colors.tip.bg.saturate(5%),
+    title-color: colors.tip.title,
     supplement: [Tip.],
   ),
   success: (
     title: "Success",
     icon: fa-icon("check-circle"),
-    fill: success-bg.saturate(5%),
-    title-color: success-title,
+    fill: colors.success.bg.saturate(5%),
+    title-color: colors.success.title,
     supplement: [Succ.],
   ),
   danger: (
     title: "Danger",
     icon: fa-icon("times-circle"),
-    fill: danger-bg.saturate(5%),
-    title-color: danger-title,
+    fill: colors.danger.bg.saturate(5%),
+    title-color: colors.danger.title,
     supplement: [Dang.],
   ),
 )
 
 // generic function that builds a specific callout function
-#let make-callout-fn = (kind) => {
+#let make-callout-fn = kind => {
   let style = callout-styles.at(kind)
-  (body,
-   title: style.title,
-   icon: style.icon,
-   supplement: style.supplement) => {
+  (body, title: style.title, icon: style.icon, supplement: style.supplement) => {
     callout(
       body,
       title: title,
@@ -147,7 +158,6 @@
   }
 }
 
-// define your callout functions dynamically
 #let info = make-callout-fn("info")
 #let faq = make-callout-fn("faq")
 #let tip = make-callout-fn("tip")
@@ -155,25 +165,30 @@
 #let danger = make-callout-fn("danger")
 
 // Definitions and Theorems
-#let math-callout(body, title, supplement, kind, stroke-fill) = { 
+#let math-callout(body, title, supplement, kind, stroke-fill, is-proof: false, of: none) = {
   figure(
-    align(left,
-    block(
-      inset: (top: 0.75em - 0.7em, bottom: 0.75em - 0.45em, right: 0.75em, left: 0.75em),
+    align(left, block(
+      inset: (top: 0.5em, bottom: 0.5em, right: 0.75em, left: 0.75em),
       width: 100%,
       clip: true,
       stroke: (left: 2.5pt + stroke-fill),
       [
         #strong([
           #sentencecase(kind)
-          #context counter(figure.where(kind: kind)).display(dependent-numbering("1.1"))
-          (#title)]) #h(0.15em) #emph(body)
+          #if is-proof {
+            [of #of]
+          } else {
+            context counter(figure.where(kind: kind)).display(dependent-numbering("1.1"))
+            [ (#title)]
+          }
+        ])
+        #h(0.15em) #emph(body)
       ],
     )),
     kind: kind,
     caption: title,
     supplement: supplement,
- )
+  )
 }
 
 #let definition(
@@ -186,7 +201,7 @@
     title,
     supplement,
     "definition",
-    purple,
+    colors.purple,
   )
 }
 
@@ -201,5 +216,21 @@
     "Theorem",
     "theorem",
     blue,
+  )
+}
+
+#let proof(
+  body,
+  of,
+  supplement: "Proof",
+) = {
+  math-callout(
+    body,
+    of: of,
+    none,
+    "Proof",
+    "proof",
+    colors.green,
+    is-proof: true,
   )
 }
