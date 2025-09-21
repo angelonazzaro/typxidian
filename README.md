@@ -1,59 +1,48 @@
-# TypXidian Template
+# TypXidian
 
-**TypXidian** is a Typst template for academic documents, such as theses, dissertations, and reports.  
+**TypXidian** is a Typst template for academic documents, such as theses, dissertations, and reports.
 
+## Features
+
+The template comes with a structured title page that can include a wide range of academic metadata: title, subtitle, authors, supervisors, university, faculty, department, degree, academic year, a quote and an abstract.  
+
+Citations, references and links are configurable with custom colors.   
+
+To improve readability, TypXidian includes styled environments for notes, tips, and warnings. These callouts are inspired by [Obsidian](https://obsidian.md/).  
+Mathematical writing is also supported, with environments for definitions, theorems, and proofs.  
+
+<table align="center">
+    <tr>
+        <td>
+              <img src="https://github.com/user-attachments/assets/760fa379-bbae-4159-a181-63e9970224bf" width="350px">
+        </td>
+        <td>
+            <img src="https://github.com/user-attachments/assets/c0023792-3e94-4b3e-82cf-13332423bd79" width="500px">
+        </td>
+    </tr>
+    <tr>
+        <td>Callouts</td>
+        <td>Math environments</td>
+    </tr>
+</table>
+
+Finally, the template allows you to select fonts, paper sizes, and languages so that the document feels tailored to your academic context.  
 
 ---
 
-## ✨ Features
+## Usage
 
-- Predefined title page with support for:
-  - Title, subtitle, authors, supervisors
-  - University, faculty, department, degree
-  - Academic year, abstract, and keywords
-- Configurable citation and reference styles
-- Customizable colors for citations, references, and links
-- Built-in support for **bibliographies** and **abbreviations**
-- Callout boxes inspired by [Obsidian](https://obsidian.md/) for notes, tips, and warnings
-- Configurable fonts, paper sizes, and languages
-
----
-
-## 📂 Project Structure
-
+To use TypXidian, start a new `.typ` document and import the template.  
+To use the template locally, run the following command in your terminal:
+```bash
+typst init @preview/typxidian:0.1.1
 ```
-.
-├── main.typ          # Example document using the template
-├── typxidian.typ     # The template definition
-├── abbreviations.typ # Example list of abbreviations
-├── bibliography.bib  # Example bibliography file
-```
 
----
-
-## 🚀 Usage
-
-### 1. Import the Template
-
-In your `.typ` file, import the template:
+Here is a minimal example showing how to set up the template with metadata for a thesis:  
 
 ```typst
 #import "@preview/typxidian:0.1.1": *
-```
 
-or locally:
-
-```typst
-#import "typxidian.typ": *
-```
-
----
-
-### 2. Apply the Template
-
-Use the `template` function with your metadata:
-
-```typst
 #show: template.with(
   title: [TypXidian],
   authors: ("Giuseppe Verdi", ),
@@ -74,65 +63,25 @@ Use the `template` function with your metadata:
 )
 ```
 
----
-
-### 3. Write Your Content
-
-Add sections after the template definition:
-
-```typst
-= Introduction
-
-*TypXidian* is a template designed for academic writing, suitable for theses and reports.
-
-== Example Callout
-> [!note]  
-> This is a note box, similar to Obsidian callouts.
-```
+Once the metadata is in place, you can start writing your chapters and sections immediately below.  
+The template will handle the layout of the title page, abstract, and other structural elements automatically.  
 
 ---
 
-## 📖 Example Output
+## Requirements
 
-When compiled, the example (`main.typ`) generates a thesis-style document with:
+To work with TypXidian you will need:
 
-- A formatted title page
-- Abstract and quote
-- Automatic bibliography management
-- Styled sections and headings
-
----
-
-## 🛠 Requirements
-
-- [Typst](https://typst.app/) v0.11.0 or later
-- Optional: A `.bib` file for bibliography
-- Optional: An `abbreviations.typ` file for acronyms
+- [Typst](https://typst.app/) version 0.13.1 or newer
+- Optionally, a `.bib` file if you want to manage your bibliography
+- Optionally, an `abbreviations.typ` file if your document uses acronyms
+- The template also makes use of Font Awesome icons via the [fontawesome](https://typst.app/universe/package/fontawesome) package.  
+  For these to display correctly, you should install the [Font Awesome 7 Desktop](https://fontawesome.com/download) fonts on your computer,  
+  or upload them to your project folder if you are working on the Typst web app.
 
 ---
 
-## 📚 Example Files
+## License
 
-- `main.typ` → Example document
-- `abbreviations.typ` → Example abbreviations list
-- `bibliography.bib` → Example BibTeX file
-
-You can compile the example with:
-
-```bash
-typst compile main.typ
-```
-
----
-
-## 🎨 Illustration
-
-Here is a sample illustration of the title page produced:
-
-![Example Title Page](docs/titlepage.png)
-
----
-
-## 📜 License
-
-This project is distributed under the MIT License.
+TypXidian is distributed under the MIT License.  
+Please note that the cat and dog photographs included in the example document (`main.typ`) are licensed under the [Unsplash terms](https://unsplash.com/license).
