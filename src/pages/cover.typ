@@ -62,6 +62,7 @@
       ]),
     )
     grid(
+      align: top,
       columns: (1fr, 1fr),
       align(left, grid(
         columns: 1fr,
