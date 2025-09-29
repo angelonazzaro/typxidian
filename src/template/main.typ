@@ -1,4 +1,4 @@
-#import "@preview/typxidian:0.1.1": *
+#import "../typxidian.typ": *
 #import "abbreviations.typ": abbreviations
 
 #show: template.with(
@@ -90,11 +90,14 @@ To assure consisten numbering of subfigures, you must use the `subfigure(..args)
     caption: [This is a cat.]
   ),
   <cat>,
-  caption: [This is a figure with subfigures.]
+  caption: [This is a figure with subfigures.],
+  label: <fig:example>
 )
 ```
-will output the following Figure:
+will output the @fig:example.
+
 #subfigure(
+  placement: auto,
   columns: (1fr, 2fr),
   figure(
     image("figures/dog.jpg"),
@@ -106,8 +109,25 @@ will output the following Figure:
     caption: [This is a cat.]
   ),
   <cat>,
-  caption: [This is a figure with subfigures.]
+  caption: [This is a figure with subfigures.],
+  label: <fig:example>
 )
+
+== No number Equations
+
+In this template, block equations are set to always be numbered. A utility function `nonum-eq` is available to write non-numbered equations. To use this function, just call it and write a block equation as you normally would:
+```typ
+#nonum-eq(
+  $ sinh(x) + cosh(x) $ 
+)
+```
+#nonum-eq(
+  $ sinh(x) + cosh(x) $ 
+)
+Calling `nonum-eq` will not affect equation numbering:
+
+$ sinh(x) + cosh(x) $ 
+
 == Paragraphs
 The `paragraph(title, body)` function mimics LaTeX's `\paragraph{}` command. For instance, the following code:
 ```typ

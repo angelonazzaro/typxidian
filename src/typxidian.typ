@@ -55,13 +55,16 @@
   set page(paper: paper-size, binding: left, margin: (inside: 2.54cm, outside: 3.04cm))
 
   set par(first-line-indent: 1em, spacing: 0.65em, justify: true, linebreaks: "optimized")
-  set list(indent: 1em, spacing: 0.85em, marker: ([•], [--]))
+  set list(indent: 1em, spacing: 1.2em, marker: ([•], [--]))
   show list: set block(inset: (top: 0.35em, bottom: 0.35em))
+
+  set enum(indent: 1em, spacing: 1.2em)
+  show enum: set block(inset: (top: 0.35em, bottom: 0.35em))
 
   set heading(numbering: "1.1")
   set figure(numbering: dependent-numbering("1.1", levels: 1))
   set math.equation(numbering: dependent-numbering("(1.1)", levels: 1))
-  
+
   // show heading: reset-counter(math.equation, levels: 1)
 
   show ref: it => {
@@ -76,16 +79,25 @@
 
   show figure.where(kind: image): set figure(supplement: image-supplement)
   show figure.where(kind: table): set figure(supplement: table-supplement)
- 
+
   show figure.caption.where(kind: "definition"): it => []
   show figure.caption.where(kind: "theorem"): it => []
   show figure.caption.where(kind: "proof"): it => []
-  
+
   show: booktabs-default-table-style
-  
+
   show figure.caption: cp => context {
     v(0.45em)
-    cp
+    layout(size => {
+      let (width, height) = measure(cp)
+      let alignment = center
+
+      if width > size.width {
+        alignment = left
+      }
+
+      align(alignment, cp)
+    })
   }
 
   show figure: set block(above: 1.25em, below: 1.25em)
@@ -131,15 +143,15 @@
     v(1.5em)
     abstract
   }
-  
+
   if introduction != none {
-      blankpage()
-      set align(center)
-  
-      text(size: sizes.chapter, heading(level: 1, "introduction", numbering: none))
-      v(1.5em)
-      introduction
-    }
+    blankpage()
+    set align(center)
+
+    text(size: sizes.chapter, heading(level: 1, "introduction", numbering: none))
+    v(1.5em)
+    introduction
+  }
 
   show heading: hd => context {
     if hd.level == 1 {
@@ -184,7 +196,13 @@
   include "pages/toc.typ"
 
   init-acronyms(abbreviations)
-  print-index(sorted: "up", row-gutter: 20pt, title: "List of Abbreviations", outlined: true, used-only: true)
+  print-index(
+    sorted: "up",
+    row-gutter: 20pt,
+    title: "List of Abbreviations",
+    outlined: true,
+    used-only: true,
+  )
 
   set page(numbering: "1", header-ascent: 35%, header: context {
     // mimic header style from 'Alice in a Differentiable Wonderland' by S.Scardapane
@@ -192,14 +210,14 @@
     // check if there is a one-level heading on the same page, if so dont's display the
     // header
     let next-h1 = query(selector(heading.where(level: 1)).after(here()))
-    
+
     // in blank page
-    if next-h1 == none or next-h1.len() == 0{
-     return; 
+    if next-h1 == none or next-h1.len() == 0 {
+      return
     }
-    
+
     next-h1 = next-h1.first()
-    
+
     let next-h1-page = counter(page).at(next-h1.location()).first()
 
     if curr-page > 1 and next-h1-page > 1 and next-h1-page != curr-page {
@@ -243,7 +261,7 @@
   doc
 
   show bibliography: set par(spacing: 1.2em)
-  
+
   bib
 
   if after-content != none {

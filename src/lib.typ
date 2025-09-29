@@ -38,6 +38,11 @@
   ),
 )
 
+#let nonum-eq(content) = {
+  set math.equation(numbering: none)
+  content
+}
+
 #let blankpage() =  context {
   set page(numbering: none, header: none)
   pagebreak()
