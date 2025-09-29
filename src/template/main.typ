@@ -1,4 +1,4 @@
-#import "../typxidian.typ": *
+#import "@preview/typxidian:0.1.2": *
 #import "abbreviations.typ": abbreviations
 
 #show: template.with(
