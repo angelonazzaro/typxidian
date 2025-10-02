@@ -1,9 +1,9 @@
-#import "@preview/typxidian:0.1.2": *
+#import "@preview/typxidian:0.1.3": *
 #import "abbreviations.typ": abbreviations
 
 #show: template.with(
   title: [TypXidian],
-  authors: ("Giuseppe Verdi", ),
+  authors: ("Giuseppe Verdi",),
   supervisors: ("Prof. Mario Rossi", "Prof. Mario Bianchi"),
   subtitle: [A template for academic documents written in Typst],
   university: [University of Salerno],
@@ -11,7 +11,7 @@
   degree: [Master's Degree in Machine Learning & Data Science],
   department: [Departmenent of Computer Science],
   academic-year: [2025/2026],
-  abstract: lorem(150), 
+  abstract: lorem(150),
   quote: [
     #lorem(20)
     \ \ #align(right, [-- John Doe])
@@ -21,9 +21,9 @@
 )
 
 = Introduction
-*TypXidian* is a template for academic writing, such as theses, dissertations, and reports.  
+*TypXidian* is a template for academic writing, such as theses, dissertations, and reports.
 
-TypXidian comes with custom environments inspired by #link("https://obsidian.md/")[Obsidian] callout boxes. Some of the environments and styling choices, such as: headers and citation style, are inspired by @scardapane2024alicesadventuresdifferentiablewonderland. 
+TypXidian comes with custom environments inspired by #link("https://obsidian.md/")[Obsidian] callout boxes. Some of the environments and styling choices, such as: headers and citation style, are inspired by @scardapane2024alicesadventuresdifferentiablewonderland.
 #linebreak()
 The purpose of this document is to act both as a showcase of the template and as documentation.
 TypXidian also comes with the following packages:
@@ -54,7 +54,7 @@ Additional metadata parameters include:
 - `is-thesis`: if `true`, the “AUTHOR(S)” label changes to “CANDIDATE(S)” (defaults to `false`).
 
 == Abstract & Citation
-By setting the `abstract` and `citation` parameters, the template adds two additional pages *before* the table of contents.  
+By setting the `abstract` and `citation` parameters, the template adds two additional pages *before* the table of contents.
 
 The citation page does *not* appear in the table of contents.
 
@@ -82,7 +82,7 @@ To assure consisten numbering of subfigures, you must use the `subfigure(..args)
   columns: (1fr, 2fr),
   figure(
     image("assets/dog.jpg"),
-    caption: [This is a dog.] 
+    caption: [This is a dog.]
   ),
   <dog>,
   figure(
@@ -101,16 +101,16 @@ will output the @fig:example.
   columns: (1fr, 2fr),
   figure(
     image("figures/dog.jpg"),
-    caption: [This is a dog.] 
+    caption: [This is a dog.],
   ),
   <dog>,
   figure(
     image("figures/cat.jpg"),
-    caption: [This is a cat.]
+    caption: [This is a cat.],
   ),
   <cat>,
   caption: [This is a figure with subfigures.],
-  label: <fig:example>
+  label: <fig:example>,
 )
 
 == No number Equations
@@ -118,15 +118,15 @@ will output the @fig:example.
 In this template, block equations are set to always be numbered. A utility function `nonum-eq` is available to write non-numbered equations. To use this function, just call it and write a block equation as you normally would:
 ```typ
 #nonum-eq(
-  $ sinh(x) + cosh(x) $ 
+  $ sinh(x) + cosh(x) $
 )
 ```
 #nonum-eq(
-  $ sinh(x) + cosh(x) $ 
+  $ sinh(x) + cosh(x) $,
 )
 Calling `nonum-eq` will not affect equation numbering:
 
-$ sinh(x) + cosh(x) $ 
+$ sinh(x) + cosh(x) $
 
 == Paragraphs
 The `paragraph(title, body)` function mimics LaTeX's `\paragraph{}` command. For instance, the following code:
@@ -139,40 +139,40 @@ will output:
 <par>
 Paragraphs are also referenceable like any other figure environment: @par.
 = Callouts, Definitions, Theorems & Proofs
-Callouts environment can be used through any of the following functions: `info`, `danger`, `success`, `tip`, `faq`. 
+Callouts environment can be used through any of the following functions: `info`, `danger`, `success`, `tip`, `faq`.
 #info([
   #lorem(25)
 
   $ x + y = integral_0^inf x y d x $
-  
+
   #lorem(10)
 ])
 #faq([
   #lorem(25)
 
   $ x + y = integral_0^inf x y d x $
-  
+
   #lorem(10)
 ])
 #tip([
   #lorem(25)
 
   $ x + y = integral_0^inf x y d x $
-  
+
   #lorem(10)
 ])
 #success([
   #lorem(25)
 
   $ x + y = integral_0^inf x y d x $
-  
+
   #lorem(10)
 ])
 #danger([
   #lorem(25)
 
   $ x + y = integral_0^inf x y d x $
-  
+
   #lorem(10)
 ])
 
@@ -197,11 +197,14 @@ Other three custom environments are also available for definitions, theorems and
 ])
 <th-1>
 
-#proof([
-  #lorem(20)
+#proof(
+  [
+    #lorem(20)
 
-  $ x + y = 1 $
-], [@th-1])
+    $ x + y = 1 $
+  ],
+  [@th-1],
+)
 
 For each, you may customize the following parameters:
 - `title`: the title appearing next to the icon.
@@ -213,7 +216,7 @@ Definitions and theorems will be listed in the List of Definitions and List of T
 = Showcase
 #acr("AI") #lorem(300)
 
-#paragraph([ML], [ 
+#paragraph([ML], [
   #acr("ML") #lorem(15)
 ])
 

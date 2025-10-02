@@ -19,8 +19,8 @@
   is-thesis: true,
   keywords: (),
   paper-size: "a4",
-  font: "new computer modern",
-  math-font: "new computer modern math",
+  font: "New Computer Modern",
+  math-font: "New Computer Modern Math",
   lang: "en",
   cite-color: colors.purple,
   ref-color: colors.purple,
@@ -36,7 +36,12 @@
 ) = {
   set text(lang: lang, font: font)
   show math.equation: set text(font: math-font)
-  set document(title: title, author: authors, description: description, keywords: keywords)
+  set document(
+    title: title,
+    author: authors,
+    description: description,
+    keywords: keywords,
+  )
 
   set cite(style: citation-style)
 
@@ -52,9 +57,17 @@
     }
   }
 
-  set page(paper: paper-size, binding: left, margin: (inside: 2.54cm, outside: 3.04cm))
+  set page(paper: paper-size, binding: left, margin: (
+    inside: 2.54cm,
+    outside: 3.04cm,
+  ))
 
-  set par(first-line-indent: 1em, spacing: 0.65em, justify: true, linebreaks: "optimized")
+  set par(
+    first-line-indent: 1em,
+    spacing: 0.65em,
+    justify: true,
+    linebreaks: "optimized",
+  )
   set list(indent: 1em, spacing: 1.2em, marker: ([•], [--]))
   show list: set block(inset: (top: 0.35em, bottom: 0.35em))
 
@@ -65,13 +78,13 @@
   set figure(numbering: dependent-numbering("1.1", levels: 1))
   set math.equation(numbering: dependent-numbering("(1.1)", levels: 1))
 
-  // show heading: reset-counter(math.equation, levels: 1)
-
   show ref: it => {
     let el = it.element
 
     if el != none and el.func() == math.equation {
-      [#el.supplement #counter(math.equation).display(dependent-numbering("1.1"))]
+      [#el.supplement #counter(math.equation).display(
+          dependent-numbering("1.1"),
+        )]
     } else {
       it
     }
@@ -135,6 +148,8 @@
   counter(page).update(1)
   set page(numbering: "i")
 
+  init-acronyms(abbreviations)
+
   if abstract != none {
     blankpage()
     set align(center)
@@ -148,7 +163,11 @@
     blankpage()
     set align(center)
 
-    text(size: sizes.chapter, heading(level: 1, "introduction", numbering: none))
+    text(size: sizes.chapter, heading(
+      level: 1,
+      "introduction",
+      numbering: none,
+    ))
     v(1.5em)
     introduction
   }
@@ -166,7 +185,10 @@
             #if hd.numbering != none {
               [#hd-counter]
               h(0.75em)
-              box(line(stroke: 1pt + black, angle: 90deg, length: 30pt), baseline: 6pt)
+              box(
+                line(stroke: 1pt + black, angle: 90deg, length: 30pt),
+                baseline: 6pt,
+              )
               h(0.75em)
             }
             #hd.body]),
@@ -195,7 +217,6 @@
 
   include "pages/toc.typ"
 
-  init-acronyms(abbreviations)
   print-index(
     sorted: "up",
     row-gutter: 20pt,
@@ -225,7 +246,11 @@
 
       let body = block(inset: 0pt, spacing: 0pt, width: 100%, [
         #if calc.even(curr-page) {
-          let header-title = query(selector(heading.where(level: 1)).before(here())).last().body
+          let header-title = query(
+            selector(heading.where(level: 1)).before(here()),
+          )
+            .last()
+            .body
           [#curr-page #h(1fr) #header-title]
         } else {
           let header = query(
@@ -247,9 +272,15 @@
 
   show heading: reset-counter(counter(figure.where(kind: image)), levels: 1)
   show heading: reset-counter(counter(figure.where(kind: table)), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "paragraph")), levels: 1)
+  show heading: reset-counter(
+    counter(figure.where(kind: "paragraph")),
+    levels: 1,
+  )
   show heading: reset-counter(counter(figure.where(kind: "callout")), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "definition")), levels: 1)
+  show heading: reset-counter(
+    counter(figure.where(kind: "definition")),
+    levels: 1,
+  )
   show heading: reset-counter(counter(figure.where(kind: "theorem")), levels: 1)
   show heading: reset-counter(counter(figure.where(kind: "proof")), levels: 1)
   show heading: reset-counter(counter(figure.where(kind: "info")), levels: 1)
