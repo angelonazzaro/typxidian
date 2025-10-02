@@ -1,6 +1,6 @@
 [package]
 name = "typxidian"
-version = "0.1.2"
+version = "0.1.3"
 compiler = "0.13.1"
 entrypoint = "src/typxidian.typ"
 authors = ["Angelo Nazzaro <https://github.com/angelonazzaro>"]

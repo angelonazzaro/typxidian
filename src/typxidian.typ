@@ -141,6 +141,8 @@
     align(center + horizon, emph(quote))
   }
 
+  init-acronyms(abbreviations)
+
   if before-content != none {
     before-content
   }
@@ -148,13 +150,11 @@
   counter(page).update(1)
   set page(numbering: "i")
 
-  init-acronyms(abbreviations)
-
   if abstract != none {
     blankpage()
     set align(center)
 
-    text(size: sizes.chapter, heading(level: 1, "abstract", numbering: none))
+    text(size: sizes.chapter, heading(level: 1, "Abstract", numbering: none))
     v(1.5em)
     abstract
   }
