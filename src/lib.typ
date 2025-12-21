@@ -1,14 +1,16 @@
-#import "dependencies.typ": dependent-numbering, fa-icon, sentencecase, subpar
+#import "dependencies.typ": fa-icon, sentencecase, subpar
 
+// text sizes
 #let sizes = (
   chapter: 26pt,
   section: 18pt,
   subsection: 16pt,
   subsubsection: 14pt,
   subsubsubsection: 12pt,
-  body: 10pt,
+  body: 11pt,
 )
 
+// obsidian color palette
 #let colors = (
   purple: rgb("7e1dfb"),
   darkgray: rgb("6d6e6d"),
@@ -38,17 +40,32 @@
   ),
 )
 
-#let nonum-eq(content) = {
-  set math.equation(numbering: none)
-  content
+// math equation block that can be used to display non-numbered equations
+#let equation(content, number: false) = context {
+  if number {
+    content
+  } else {
+    set math.equation(numbering: none)
+    content
+  }
 }
 
-#let blankpage() =  context {
+// creates blank pages that do not update the global page counter
+#let blankpage(single: true) = context {
   set page(numbering: none, header: none)
-  pagebreak()
-  pagebreak()
-  counter(page).update(n => n - 1)
+
+  if single {
+    pagebreak()
+    pagebreak()
+  } else {
+    // this is reserved for separting chapters
+    // we want at least one blank page between chapters
+    // each chapter must start on an odd page
+    pagebreak()
+    pagebreak(to: "even")
+  }
 }
+
 
 #let subfigure(..args) = {
   subpar.grid(
@@ -63,23 +80,29 @@
   )
 }
 
-#let paragraph(title, body) = {
+// paragraph function imitating LaTeX's \paragraph{}{}
+#let paragraph(body, title: "", kind: "par", supplement: "Paragraph") = {
   figure(
     align(left, block(
       width: 100%,
       [
-        #text(weight: "bold", title). #h(0.05em) #body
+        #if title != none and title.len() > 0 {
+          strong(title + ".")
+          h(0.05em)
+        }
+        #body
       ],
     )),
-    supplement: [Paragraph],
-    kind: "paragraph",
+    supplement: supplement,
+    kind: kind,
   )
 }
 
+// obsidian-like callouts
 #let callout(
   body,
   kind: "callout",
-  supplement: [Call.],
+  supplement: [Callout],
   title: "Callout",
   fill: blue,
   title-color: white,
@@ -97,14 +120,17 @@
       fill: fill,
       clip: true,
       [
-        #text(fill: title-color, weight: "bold", size: (sizes.body + 1pt))[
-          #if icon != none {
-            icon
-            h(0.15em)
-          }
-          #title
-        ]
-        #block(text(fill: body-color)[#body], above: 1.2em)
+        #block(
+          below: 0pt,
+          text(fill: title-color, weight: "bold")[
+            #if icon != none {
+              icon
+              h(0.15em)
+            }
+            #title
+          ],
+        )
+        #block(text(fill: body-color)[#body], above: 1em)
       ],
     ))),
   )
@@ -117,35 +143,35 @@
     icon: fa-icon("info-circle"),
     fill: colors.info.bg.saturate(5%),
     title-color: colors.info.title,
-    supplement: [Info.],
+    supplement: [Info],
   ),
   faq: (
     title: "FAQ",
     icon: fa-icon("question-circle"),
     fill: colors.faq.bg.saturate(5%),
     title-color: colors.faq.title,
-    supplement: [FAQ.],
+    supplement: [FAQ],
   ),
   tip: (
     title: "Tip",
     icon: fa-icon("lightbulb"),
     fill: colors.tip.bg.saturate(5%),
     title-color: colors.tip.title,
-    supplement: [Tip.],
+    supplement: [Tip],
   ),
   success: (
     title: "Success",
     icon: fa-icon("check-circle"),
     fill: colors.success.bg.saturate(5%),
     title-color: colors.success.title,
-    supplement: [Succ.],
+    supplement: [Success],
   ),
   danger: (
     title: "Danger",
     icon: fa-icon("times-circle"),
     fill: colors.danger.bg.saturate(5%),
     title-color: colors.danger.title,
-    supplement: [Dang.],
+    supplement: [Danger],
   ),
 )
 
@@ -171,7 +197,7 @@
 #let success = make-callout-fn("success")
 #let danger = make-callout-fn("danger")
 
-// Definitions and Theorems
+// definitions and theorems
 #let math-callout(body, title, supplement, kind, stroke-fill, is-proof: false, of: none) = {
   figure(
     align(left, block(
@@ -180,12 +206,13 @@
       clip: true,
       stroke: (left: 2.5pt + stroke-fill),
       [
+        #set par(first-line-indent: 0pt)
         #strong([
           #sentencecase(kind)
           #if is-proof {
             [of #of]
           } else {
-            context counter(figure.where(kind: kind)).display(dependent-numbering("1.1"))
+            context counter(figure.where(kind: kind)).display()
             [ (#title)]
           }
         ])
@@ -193,7 +220,7 @@
       ],
     )),
     kind: kind,
-    caption: title,
+    caption: none,
     supplement: supplement,
   )
 }

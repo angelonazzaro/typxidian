@@ -1,7 +1,10 @@
 # TypXidian
 
-**TypXidian** is a Typst template for academic documents, such as theses, dissertations, and reports.
+**TypXidian** is a highly customizable template for academic writing, thought for theses, disserations and reports.
+It  is based, both on color palette and functionalities, on [Obsidian](https://obsidian.md/)
+    and "Alice in a Differentiable Wonderland" by Simone Scardapane 
 
+A twin LaTeX version of TypXidian is available at: [LaXidiaN](https://github.com/robertodr01/LaXidiaN).
 ## Features
 
 The template comes with a structured title page that can include a wide range of academic metadata: title, subtitle, authors, supervisors, university, faculty, department, degree, academic year, a quote and an abstract.  
@@ -33,40 +36,44 @@ Finally, the template allows you to select fonts, paper sizes, and languages so 
 To use TypXidian, start a new `.typ` document and import the template.  
 To use the template locally, run the following command in your terminal:
 ```bash
-typst init @preview/typxidian:0.1.3
+typst init @preview/typxidian:1.0.0
 ```
 
 Here is a minimal example showing how to set up the template with metadata for a thesis:  
 
 ```typst
-#import "@preview/typxidian:0.1.3": *
+#import "@preview/typxidian:1.0.0": *
 
 #show: template.with(
-  title: [TypXidian],
-  authors: ("Giuseppe Verdi", ),
-  supervisors: ("Prof. Mario Rossi", "Prof. Mario Bianchi"),
-  subtitle: [A template for academic documents written in Typst],
-  university: [University of Salerno],
-  faculty: [Faculty of Science],
-  degree: [Master's Degree in Machine Learning & Data Science],
+  
+title: [TypXidian],
+  subtitle: [A template for academic writing written in Typst],
   department: [Department of Computer Science],
-  academic-year: [2025/2026],
-  abstract: lorem(150),
-  quote: [
-    #lorem(20)
-    \ \ #align(right, [-- John Doe])
-  ],
-  bib: bibliography("bibliography.bib"),
+  course: [Master of Science (Computer Science)],
+  university: [University of Salerno],
+  academic-year: [2024-2025],
+  authors: ((name: "Mario Rossi", email: "mario@rossi.it", num: "Registration Number: XXXX"),),
+  supervisors: ("Prof. Giuseppe Verdi", "Prof. Mario Bianchi"),
+  is-thesis: true,
+  thesis-type: [master thesis],
   abbreviations: abbreviations,
+  chapter-alignment: right,
+  bib: bibliography("bibliography.bib"),
+  quote: quote(block: true, quotes: true, attribution: [Some wise guy], [#lorem(25)]),
+  abstract: lorem(200),
 )
 ```
 
 Once the metadata is in place, you can start writing your chapters and sections immediately below.  
 The template will handle the layout of the title page, abstract, and other structural elements automatically.  
 
-### Working with Chapters
-
-Typst does not currently support textual inclusion. If you plan to split your document into standalone chapter files, you can simply re-include the package in each file to access its functions
+> [!WARNING]
+> **Working with Chapters**
+> 
+> Typst does not currently support _textual inclusion_, meaning that you can use only dependencies
+    directly imported in the current file. For this reason, if you plan to split your document into
+    standalone chapters, you must include the package in each file to access its functions.],
+>
 
 ## Requirements
 

@@ -1,13 +1,13 @@
 [package]
 name = "typxidian"
-version = "0.1.3"
+version = "1.0.0"
 compiler = "0.13.1"
 entrypoint = "src/typxidian.typ"
 authors = ["Angelo Nazzaro <https://github.com/angelonazzaro>"]
 keywords = ["thesis", "report"]
 categories = ["report", "thesis"]
 license = "MIT"
-description = "Modern note-taking, thesis and academic reports inspried by Obsidian."
+description = "Modern note-taking, thesis and academic reports inspried by Obsidian and 'Alice in a Differentiable Wonderland'."
 repository = "https://github.com/angelonazzaro/typxidian"
 
 [template]

@@ -290,18 +290,6 @@
   column-ratio: 0.25,
   clickable: true,
 ) = {
-  //Print an index of all the acronyms and their definitions.
-  // Args:
-  //   level: level of the heading. Default to 1.
-  //   outlined: make the index section outlined. Default to false
-  //   sorted: define if and how to sort the acronyms: "up" for alphabetical order, "down" for reverse alphabetical order, "" for no sort (print in the order they are defined). Default to "".
-  //   title: set the title of the heading. Default to "Acronyms Index". Passing an empty string will result in removing the heading.
-  //   delimiter: String to place after the acronym in the list. Defaults to ":"
-  //   used-only: if true, only include in the index the acronyms that are used in the document. Warning, if you reset acronyms and don't used them after, they may not appear.
-  //   column-ratio: a float positive value that indicate the width ratio of the first column (acronyms) with respect to the second (definitions).
-  // clickable: if true, create a clickable link to the acryonym in the first acronym index
-
-  // assert on input values to avoid cryptic error messages
   assert(
     sorted in ("", "up", "down"),
     message: "Sorted must be a string either \"\", \"up\" or \"down\"",
@@ -316,9 +304,7 @@
     let acronyms = acros.get()
     let acr-list = acronyms.keys()
 
-
     if used-only {
-      // Select only acronyms where state is true at the end of the document.
       let acronyms = acros.final()
       let used-acr-list = ()
       for acr in acr-list {
@@ -329,45 +315,55 @@
       acr-list = used-acr-list
     }
 
-    // FEATURE: allow ordering by occurences position in the document. Not sure if possible yet.
-
-    // order list depending on the sorted argument
     if sorted == "down" {
       acr-list = acr-list.sorted().rev()
     } else if sorted == "up" {
-      acr-list = acr-list.sorted()
+      acr-list = acr-list.sorted(key: acr => lower(acr))
     }
 
-    // print the acronyms
     let col1 = column-ratio / (1 + column-ratio)
     let col2 = 1 - col1
     let last_letter = none
+    let need_letter = false
+
     grid(
       columns: (col1 * 100%, col2 * 100%),
       row-gutter: row-gutter,
       ..for acr in acr-list {
         if last_letter == none or (last_letter != acr.at(0)) {
-          (
-            [#strong(acr.at(0))],
-            [],
-          )
+          need_letter = true
           last_letter = acr.at(0)
+        } else {
+          need_letter = false
         }
 
-        // check if a label for a link should be created and if it is the first acronyms index, since it can not create multiple labels
-        if clickable and (not index.get()) {
+        if need_letter {
+          let rest = acr.slice(1)
+
           (
-            [*#display-short(acr, plural: false)#label("acrostiche-" + acr)*],
-            display-def(acr, plural: false),
+            // prima cella: lettera grande + resto
+            grid.cell(align: bottom)[*
+            #text(size: 15pt, last_letter)
+            #h(-3pt)
+            #text(size: 10pt, rest + delimiter)#label("acrostiche-" + acr)
+            *],
+            grid.cell(align: bottom)[
+              #display-def(acr, plural: false)
+            ],
           )
         } else {
-          ([*#display-short(acr, plural: false)#delimiter*], display-def(acr, plural: false))
+          (
+            grid.cell(
+              align: bottom,
+            )[#h(6pt)*#display-short(acr, plural: false)#label("acrostiche-" + acr)#delimiter*],
+            grid.cell(align: bottom)[#display-def(acr, plural: false)],
+          )
         }
       }
     )
+
     if clickable {
       index.update(true)
     }
   }
 }
-
