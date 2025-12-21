@@ -1,299 +1,344 @@
-#import "dependencies.typ": *
 #import "lib.typ": *
+#import "dependencies.typ": *
 
 #let template(
   title: none,
+  title-size: sizes.chapter,
   subtitle: none,
   authors: (),
   supervisors: (),
   abstract: none,
-  introduction: none,
   quote: none,
-  university: none,
-  degree: none,
-  faculty: none,
-  department: none,
-  academic-year: none,
+  acknowledgments: none,
+  introduction: none,
   description: none,
-  logo: none,
-  is-thesis: true,
   keywords: (),
-  paper-size: "a4",
+  abbreviations: (),
+  abbr-title: "List of Abbreviations",
+  university: none,
+  academic-year: none,
+  course: none,
+  department: none,
+  logo: none,
+  logo-width: 110pt,
+  is-thesis: false,
+  thesis-type: none,
+  paper: "a4",
+  binding: left,
+  margin: (inside: 2.54cm, outside: 3.04cm),
+  page-numbering: "1",
   font: "New Computer Modern",
   math-font: "New Computer Modern Math",
-  lang: "en",
+  font-sizes: sizes,
+  citation-style: "alphanumeric",
   cite-color: colors.purple,
   ref-color: colors.purple,
   link-color: blue,
-  image-supplement: [figure],
-  table-supplement: [table],
-  citation-style: "alphanumeric",
-  bib: [],
-  abbreviations: (),
+  chapter-supplement: "Chapter",
+  chapter-alignment: center,
+  chapter-style: "basic",
+  chapter-color: colors.purple.darken(30%),
+  lang: "en",
+  bib: none,
+  bib-title: "Bibliography",
   before-content: none,
   after-content: none,
   doc,
 ) = {
-  set text(lang: lang, font: font)
-  show math.equation: set text(font: math-font)
+  set page(
+    paper: paper,
+    binding: binding,
+    numbering: none,
+    number-align: center,
+  )
+
   set document(
     title: title,
-    author: authors,
+    // TODO: if authors is a list of dict, convert it to a list of strings getting only the name
+    // author: authors,
     description: description,
     keywords: keywords,
   )
 
-  set cite(style: citation-style)
+  set text(lang: lang, font: font)
+  show math.equation: set text(font: math-font)
 
+  set cite(style: citation-style)
   show cite: set text(fill: cite-color)
   show ref: set text(fill: ref-color)
 
   show link: it => {
     if type(it.dest) == str {
-      // ext link
+      // external link
       text(fill: link-color)[#underline(it.body)]
     } else {
       it
     }
   }
 
-  set page(paper: paper-size, binding: left, margin: (
-    inside: 2.54cm,
-    outside: 3.04cm,
-  ))
-
   set par(
-    first-line-indent: 1em,
+    first-line-indent: (amount: 1em, all: true),
     spacing: 0.65em,
     justify: true,
-    linebreaks: "optimized",
   )
-  set list(indent: 1em, spacing: 1.2em, marker: ([•], [--]))
-  show list: set block(inset: (top: 0.35em, bottom: 0.35em))
 
-  set enum(indent: 1em, spacing: 1.2em)
-  show enum: set block(inset: (top: 0.35em, bottom: 0.35em))
+  set list(indent: 2.5em, spacing: 1.2em, marker: ([•], [--]))
+  show list: set block(inset: (top: 0.25em, bottom: 0.25em))
 
+  set enum(indent: 2.5em, spacing: 1.2em)
+  show enum: set block(inset: (top: 0.25em, bottom: 0.25em))
+
+  // numbering for figures and equations depending on 1st level heading
   set heading(numbering: "1.1")
-  set figure(numbering: dependent-numbering("1.1", levels: 1))
-  set math.equation(numbering: dependent-numbering("(1.1)", levels: 1))
+
+  set figure(numbering: (..nums) => {
+    let section = counter(heading).get().first()
+    numbering("1.1", section, ..nums)
+  })
+
+  set math.equation(numbering: (..nums) => {
+    let section = counter(heading).get().first()
+    numbering("(1.1)", section, ..nums)
+  })
+
+  show figure: set block(above: 1.5em, below: 1.5em)
+  show math.equation: set block(above: 1.5em, below: 1.5em)
 
   show ref: it => {
     let el = it.element
 
     if el != none and el.func() == math.equation {
-      [#el.supplement #counter(math.equation).display(
-          dependent-numbering("1.1"),
-        )]
+      [#el.supplement #counter(heading.where(level: 1)).display().#counter(math.equation).display("1.1")]
     } else {
       it
     }
   }
 
-  show figure.where(kind: image): set figure(supplement: image-supplement)
-  show figure.where(kind: table): set figure(supplement: table-supplement)
-
-  show figure.caption.where(kind: "definition"): it => []
-  show figure.caption.where(kind: "theorem"): it => []
-  show figure.caption.where(kind: "proof"): it => []
-
-  show: booktabs-default-table-style
-
-  show figure.caption: cp => context {
-    v(0.45em)
-    layout(size => {
-      let (width, height) = measure(cp)
-      let alignment = center
-
-      if width > size.width {
-        alignment = left
+  // display counter under images and tables even if caption is none
+  // figures outside the main body are not affected by this
+  show figure: it => context {
+    if it.kind != image and it.kind != table {
+      it
+    } else {
+      if it.caption == none and counter(figure.where(kind: it.kind)).get().first() > 0 {
+        it.body
+        v(0.25em)
+        [#it.supplement~#counter(figure.where(kind: it.kind)).display()]
+      } else {
+        it
       }
+    }
+  }
 
-      align(alignment, cp)
+  // caption is aligned to center if its widht is smaller than text width, otherwise it is
+  // aligned to the left
+  show figure.caption: it => context {
+    v(0.25em)
+    layout(size => {
+      let (width, height) = measure(it)
+      let alignment = if width <= size.width { center } else { left }
+      align(alignment, it)
     })
   }
 
-  show figure: set block(above: 1.25em, below: 1.25em)
-  show math.equation: set block(above: 1.25em, below: 1.25em)
+  // COVER
+  import "pages/cover.typ": cover
 
-  import "pages/cover.typ": coverpage
-
-  coverpage(
+  cover(
     title: title,
     subtitle: subtitle,
     authors: authors,
     supervisors: supervisors,
-    faculty: faculty,
+    course: course,
     department: department,
     university: university,
     academic-year: academic-year,
-    degree: degree,
     logo: logo,
+    logo-width: logo-width,
+    title-size: title-size,
     is-thesis: is-thesis,
+    thesis-type: thesis-type,
   )
 
-  set text(size: sizes.body)
-
   if quote != none {
-    blankpage()
-    set text(size: sizes.subsection)
+    pagebreak()
+    counter(page).update(n => n - 1)
+    set text(size: font-sizes.subsubsection)
     set page(margin: (right: 7em, left: 7em))
-    align(center + horizon, emph(quote))
+    align(center + horizon, [#quote])
   }
 
-  init-acronyms(abbreviations)
+  set page(numbering: "i", margin: margin)
+  counter(page).update(1)
+
+  if abstract != none {
+    blankpage()
+    counter(page).update(n => n - 1)
+    align(chapter-alignment, text(size: font-sizes.chapter, weight: "bold")[
+      #heading(
+        "Abstract",
+        level: 1,
+        numbering: none,
+      )
+    ])
+    v(3em)
+    abstract
+  }
 
   if before-content != none {
     before-content
   }
 
-  counter(page).update(1)
-  set page(numbering: "i")
-
-  if abstract != none {
-    blankpage()
-    set align(center)
-
-    text(size: sizes.chapter, heading(level: 1, "Abstract", numbering: none))
-    v(1.5em)
-    abstract
-  }
-
   if introduction != none {
     blankpage()
-    set align(center)
-
-    text(size: sizes.chapter, heading(
-      level: 1,
-      "introduction",
-      numbering: none,
-    ))
-    v(1.5em)
+    counter(page).update(n => n - 1)
+    align(chapter-alignment, text(size: font-sizes.chapter, weight: "bold")[
+      #heading(
+        "Introduction",
+        level: 1,
+        numbering: none,
+      )
+    ])
+    v(3em)
     introduction
   }
 
-  show heading: hd => context {
-    if hd.level == 1 {
-      blankpage()
-      let hd-counter = counter(heading).get().first()
+  show heading.where(level: 1): it => context {
+    counter(figure).update(0)
+    counter(math.equation).update(0)
 
-      align(left, text(size: sizes.chapter, [
-        #stack(
-          spacing: 1em,
-          line(length: 100%, stroke: 1pt + black),
-          box([
-            #if hd.numbering != none {
-              [#hd-counter]
-              h(0.75em)
-              box(
-                line(stroke: 1pt + black, angle: 90deg, length: 30pt),
-                baseline: 6pt,
-              )
-              h(0.75em)
-            }
-            #hd.body]),
-          line(length: 100%, stroke: 1pt + black),
-        )
-        #v(0.75em)
-      ]))
-    } else {
-      let text-size = if hd.level == 1 {
-        sizes.section
-      } else if hd.level == 2 {
-        sizes.subsection
-      } else if hd.level == 3 {
-        sizes.subsubsection
+    blankpage(single: false)
+
+    let content = [#text(size: font-sizes.chapter)[#it]]
+
+    if it.numbering != none {
+      if chapter-style == "wonderland" {
+        content = [
+          #align(left, text(size: sizes.chapter, [
+            #stack(
+              spacing: 1em,
+              line(length: 100%, stroke: 1pt + black),
+              box([
+                #counter(heading).get().first()
+                #h(0.75em)
+                #box(
+                  line(stroke: 1pt + black, angle: 90deg, length: 30pt),
+                  baseline: 6pt,
+                )
+                #h(0.75em)
+                #it.body
+              ]),
+              line(length: 100%, stroke: 1pt + black),
+            )
+            #v(0.75em)
+          ]))]
       } else {
-        sizes.subsubsubsection
+        content = align(chapter-alignment, [
+          #text(size: font-sizes.subsection, fill: chapter-color)[#upper(chapter-supplement) #(
+              counter(heading).get().first()
+            )]
+          #linebreak()
+          #v(0.35em)
+          #text(size: font-sizes.chapter)[#it.body]
+        ])
       }
-      set text(size: text-size)
-      block(inset: (top: 0.5em, bottom: 0.5em), {
-        context counter(heading).display()
-        h(0.75em)
-        hd.body
-      })
     }
+
+    content += [#v(2em)]
+
+    if chapter-style == "wonderland" {
+      content = block(width: 100%, content)
+    } else {
+      content = block(width: 80%, content)
+    }
+
+    align(chapter-alignment, content)
   }
 
+  show heading.where(level: 2).or(heading.where(level: 3)).or(heading.where(level: 4)): it => {
+    let text-size = if it.level == 2 {
+      font-sizes.section
+    } else if it.level == 3 {
+      font-sizes.subsection
+    } else if it.level == 4 {
+      font-sizes.subsubsection
+    }
+
+    text(size: text-size)[#it]
+    v(0.75em)
+  }
+
+  // TOC
   include "pages/toc.typ"
 
+
+  // Acronyms
+  init-acronyms(abbreviations)
   print-index(
     sorted: "up",
     row-gutter: 20pt,
-    title: "List of Abbreviations",
+    title: abbr-title,
     outlined: true,
     used-only: true,
   )
 
-  set page(numbering: "1", header-ascent: 35%, header: context {
-    // mimic header style from 'Alice in a Differentiable Wonderland' by S.Scardapane
-    let curr-page = counter(page).get().first()
-    // check if there is a one-level heading on the same page, if so dont's display the
-    // header
-    let next-h1 = query(selector(heading.where(level: 1)).after(here()))
-
-    // in blank page
-    if next-h1 == none or next-h1.len() == 0 {
-      return
-    }
-
-    next-h1 = next-h1.first()
-
-    let next-h1-page = counter(page).at(next-h1.location()).first()
-
-    if curr-page > 1 and next-h1-page > 1 and next-h1-page != curr-page {
+  // BODY
+  set page(
+    numbering: page-numbering,
+    header-ascent: 35%,
+    header: context {
       set text(fill: colors.darkgray)
+      let curr-page = counter(page).get().first()
+      let next-chp = query(selector(heading.where(level: 1)).after(here()))
 
-      let body = block(inset: 0pt, spacing: 0pt, width: 100%, [
-        #if calc.even(curr-page) {
-          let header-title = query(
-            selector(heading.where(level: 1)).before(here()),
-          )
-            .last()
-            .body
-          [#curr-page #h(1fr) #header-title]
-        } else {
-          let header = query(
-            selector(heading.where(level: 1)).before(here()),
-          ).last()
+      // we are in a blank page
+      if next-chp == none or next-chp.len() == 0 {
+        return
+      }
 
-          [Chapter #counter(heading).at(header.location()).at(0): #header.body #h(1fr) #curr-page]
-        }
+      next-chp = next-chp.first()
+      let next-chp-page = counter(page).at(next-chp.location()).first()
+
+      // check if there is 1st level heading on this page, if there is do not display the header
+      if curr-page == 1 or next-chp-page == 1 or curr-page == next-chp-page {
+        return
+      }
+
+      let alignment = none
+      let body = none
+
+      if calc.even(curr-page) {
+        alignment = right
+        let header-title = query(selector(heading).before(here())).last().body
+        body = [#curr-page #h(1fr) #header-title]
+      } else {
+        alignment = left
+        let header-title = query(selector(heading.where(level: 1)).before(here())).last().body
+        body = [#chapter-supplement #counter(heading.where(level: 1)).display(): #header-title
+          #h(1fr) #curr-page]
+      }
+
+      align(alignment, [
+        #block(inset: 0pt, spacing: 0pt, body)
+        #v(0.75em)
+        #line(length: 100%, stroke: 0.2pt)
       ])
-
-      let alignment = if calc.even(curr-page) { right } else { left }
-      align(alignment, box([#body #v(0.9em) #line(
-          length: 100%,
-          stroke: 0.2pt,
-        )]))
-    }
-  })
-  counter(page).update(1)
-
-  show heading: reset-counter(counter(figure.where(kind: image)), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: table)), levels: 1)
-  show heading: reset-counter(
-    counter(figure.where(kind: "paragraph")),
-    levels: 1,
+    },
   )
-  show heading: reset-counter(counter(figure.where(kind: "callout")), levels: 1)
-  show heading: reset-counter(
-    counter(figure.where(kind: "definition")),
-    levels: 1,
-  )
-  show heading: reset-counter(counter(figure.where(kind: "theorem")), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "proof")), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "info")), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "tip")), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "success")), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "danger")), levels: 1)
-  show heading: reset-counter(counter(figure.where(kind: "faq")), levels: 1)
-  show heading: reset-counter(counter(math.equation), levels: 1)
+  set text(size: font-sizes.body)
+  counter(page).update(0)
+
   doc
+
+  // BIBLIOGRAPHY
 
   show bibliography: set par(spacing: 1.2em)
 
-  bib
+  if type(bib) == content {
+    bib
+  } else {
+    bibliography(bib, title: bib-title)
+  }
 
   if after-content != none {
     after-content

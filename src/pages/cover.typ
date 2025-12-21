@@ -1,93 +1,125 @@
-#let coverpage(
+#import "../lib.typ": sizes
+
+#let cover(
   title: none,
   subtitle: none,
-  department: none,
-  faculty: none,
+  title-size: sizes.chapter,
   university: none,
   academic-year: none,
-  degree: none,
-  logo: none,
+  course: none,
+  department: none,
   supervisors: (),
+  logo: none,
+  logo-width: 110pt,
+  is-thesis: false,
+  thesis-type: none,
   authors: (),
-  is-thesis: true,
 ) = {
   set page(numbering: none)
-  set align(center + horizon)
-
-  text(32pt, weight: "bold")[#title]
-
-  if subtitle != none {
-    linebreak()
-    v(1em)
-    text(18pt)[#subtitle]
-  }
 
   if logo == none {
-    logo = image("../figures/logo.svg", width: 37%)
+    logo = "../figures/logo.svg"
   }
 
-  block(above: 4em, below: 4em, logo)
-
-  set text(16pt)
-
-  if supervisors.len() == 0 and authors.len() > 0 {
-    let ncols = calc.max(calc.div-euclid(authors.len(), 3), 1)
-
-    grid(
-      columns: (1fr,) * ncols,
-      row-gutter: 15pt,
-      ..authors.map(author => [#text(size: 14pt, upper(author))])
+  align(center + top, [
+    #figure(
+      image(logo, width: logo-width),
+      numbering: none,
+      caption: none,
     )
-  } else {
-    let authors-title = if is-thesis {
-      if authors.len() > 1 { text("CANDIDATES") } else { text("CANDIDATE") }
-    } else {
-      if authors.len() > 1 { text("AUTHORS") } else { text("AUTHOR") }
+    #strong(department)
+    #linebreak()
+    #strong(course)
+    #linebreak()
+    #strong(university)
+    #if is-thesis {
+      v(3em)
+      upper(thesis-type)
     }
+    #v(3em)
+  ])
 
-    let sups-title = if supervisors.len() > 1 { text("SUPERVISORS") } else {
-      text("SUPERVISOR")
+  align(center, [
+    #text(weight: "bold", size: title-size)[#title]
+    #if subtitle != none {
+      linebreak()
+      v(1em)
+      subtitle
     }
-    grid(
-      columns: (1fr, 1fr),
-      align(left, [
+    #v(5em)
 
-        #strong(sups-title)
-        #v(0.35em)
-      ]),
-      align(right, [
-
-        #strong(authors-title)
-        #v(0.35em)
-      ]),
-    )
-    grid(
-      align: top,
-      columns: (1fr, 1fr),
-      align(left, grid(
-        columns: 1fr,
+    #if supervisors.len() == 0 and authors.len() > 0 {
+      let ncols = calc.min(authors.len(), 3)
+      set text(size: sizes.subsubsubsection)
+      grid(
+        columns: (1fr,) * ncols,
         row-gutter: 15pt,
-        ..supervisors.map(s => [#text(size: 14pt, s)#linebreak()])
-      )),
+        ..authors.map(a => [
+          #if type(a) == dictionary {
+            for key in a.keys() {
+              a.at(key)
+              linebreak()
+            }
+          } else {
+            a
+          }
+        ])
+      )
+    }
+    #if supervisors.len() > 0 and authors.len() > 0 {
+      let supervisors-title = "SUPERVISOR"
+      let authors-title = "CANDIDATE"
 
-      align(right, grid(
-        columns: 1fr,
-        ..authors.map(a => [#text(size: 14pt, a)#linebreak()]),
-      )),
-    )
-  }
-  set text(14pt)
-  v(3em)
-  strong(faculty)
-  linebreak()
-  strong(department)
-  linebreak()
-  strong(degree)
-  linebreak()
-  strong(university)
-  v(3em)
+      if authors.len() > 1 {
+        authors-title += "S"
+      }
+      if supervisors.len() > 1 {
+        supervisors-title += "S"
+      }
+
+      grid(
+        columns: (1fr, 1fr),
+        row-gutter: 10pt,
+        align(left, [
+          #text(size: sizes.subsubsubsection, weight: "bold")[#supervisors-title]
+        ]),
+        align(right, [
+          #text(size: sizes.subsubsubsection, weight: "bold")[#authors-title#v(0.5em)]
+        ]),
+      )
+
+      grid(
+        align: top,
+        columns: (1fr, 1fr),
+        align(left, grid(
+          columns: 1fr,
+          row-gutter: 15pt,
+          ..supervisors.map(s => [#text(size: sizes.body, s)])
+        )),
+        align(right, grid(
+          columns: 1fr,
+          row-gutter: 15pt,
+          ..authors.map(a => [
+            #text(size: sizes.body)[
+              #if type(a) == dictionary {
+                for key in a.keys() {
+                  a.at(key)
+                  linebreak()
+                }
+              } else {
+                a
+              }
+            ]
+          ])
+        )),
+      )
+    }
+  ])
 
   if academic-year != none {
-    [Academic year #academic-year]
+    align(center + bottom, [
+      Academic year #academic-year
+    ])
   }
+  pagebreak()
 }
