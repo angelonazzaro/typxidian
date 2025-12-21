@@ -1,10 +1,10 @@
 # TypXidian
 
 **TypXidian** is a highly customizable template for academic writing, thought for theses, disserations and reports.
-It  is based, both on color palette and functionalities, on ["https://obsidian.md"](Obsidian)
+It  is based, both on color palette and functionalities, on [Obsidian](https://obsidian.md/)
     and "Alice in a Differentiable Wonderland" by Simone Scardapane 
 
-A twin LaTeX version of TypXidian is available at: ["https://github.com/robertodr01/LaXidiaN"](LaXidiaN).
+A twin LaTeX version of TypXidian is available at: [LaXidiaN](https://github.com/robertodr01/LaXidiaN).
 ## Features
 
 The template comes with a structured title page that can include a wide range of academic metadata: title, subtitle, authors, supervisors, university, faculty, department, degree, academic year, a quote and an abstract.  
@@ -69,6 +69,7 @@ The template will handle the layout of the title page, abstract, and other struc
 
 > [!WARNING]
 > **Working with Chapters**
+> 
 > Typst does not currently support _textual inclusion_, meaning that you can use only dependencies
     directly imported in the current file. For this reason, if you plan to split your document into
     standalone chapters, you must include the package in each file to access its functions.],
