@@ -44,9 +44,8 @@ Here is a minimal example showing how to set up the template with metadata for a
 ```typst
 #import "@preview/typxidian:1.0.0": *
 
-#show: template.with(
-  
-title: [TypXidian],
+#show: template.with( 
+  title: [TypXidian],
   subtitle: [A template for academic writing written in Typst],
   department: [Department of Computer Science],
   course: [Master of Science (Computer Science)],

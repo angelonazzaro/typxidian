@@ -8,6 +8,7 @@
   authors: (),
   supervisors: (),
   abstract: none,
+  abstract-alignment: center,
   quote: none,
   acknowledgments: none,
   introduction: none,
@@ -35,7 +36,7 @@
   ref-color: colors.purple,
   link-color: blue,
   chapter-supplement: "Chapter",
-  chapter-alignment: center,
+  chapter-alignment: right,
   chapter-style: "basic",
   chapter-color: colors.purple.darken(30%),
   lang: "en",
@@ -174,7 +175,7 @@
   if abstract != none {
     blankpage()
     counter(page).update(n => n - 1)
-    align(chapter-alignment, text(size: font-sizes.chapter, weight: "bold")[
+    align(abstract-alignment, text(size: font-sizes.chapter, weight: "bold")[
       #heading(
         "Abstract",
         level: 1,
@@ -192,7 +193,7 @@
   if introduction != none {
     blankpage()
     counter(page).update(n => n - 1)
-    align(chapter-alignment, text(size: font-sizes.chapter, weight: "bold")[
+    align(abstract-alignment, text(size: font-sizes.chapter, weight: "bold")[
       #heading(
         "Introduction",
         level: 1,

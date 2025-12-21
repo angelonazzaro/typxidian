@@ -13,6 +13,7 @@
   is-thesis: true,
   thesis-type: [master thesis],
   abbreviations: abbreviations,
+  abstract-alignment: center,
   chapter-alignment: right,
   bib: bibliography("bibliography.bib"),
   quote: quote(block: true, quotes: true, attribution: [Some wise guy], [#lorem(25)]),
@@ -85,8 +86,7 @@ TypXidian offers two chapter heading styles: "basic" and "wonderland". You can s
 )
 
 
-You can customize the alignment of first-level headings (including abstract, introduction, acknowledgments
-table of contents) through the `chapter-alignment` parameter.
+You can customize the alignment of first-level headings (including table of contents) through the `chapter-alignment` parameter. The abstract, introductiom and acknowledgment pages headings can be aligned through the `abstract-alignment` parameter.
 
 === Front Matter
 
@@ -137,7 +137,7 @@ Additional customization can be done via the following parameters:
 ==== Miscellaneous
 
 You can add additional content before the main body by passing the `abstract`, `citation`, `introduction` and
-`acknowledgments` parameters. If populated, the template will add these pages _before_ the table of contents.
+`acknowledgments` parameters. If populated, the template will add these pages _before_ the table of contents. The title alignment for these pages can be customized through the `abstract-alignment` parameter.
 
 Additionally, you can populate the `before-content` and `after-content` parameters to add _any_ additional
 content _before_ the abstract and _after_ the bibliography (e.g., declaration of originality for PhD theses or
