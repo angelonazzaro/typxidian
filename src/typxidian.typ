@@ -84,10 +84,10 @@
   )
 
   set list(indent: 2.5em, spacing: 1.2em, marker: ([•], [--]))
-  show list: set block(inset: (top: 0.25em, bottom: 0.25em))
+  show list: set block(inset: (top: 1em, bottom: 1em))
 
   set enum(indent: 2.5em, spacing: 1.2em)
-  show enum: set block(inset: (top: 0.25em, bottom: 0.25em))
+  show enum: set block(inset: (top: 1em, bottom: 1em))
 
   // numbering for figures and equations depending on 1st level heading
   set heading(numbering: "1.1")
@@ -107,9 +107,9 @@
 
   show ref: it => {
     let el = it.element
-
+    // https://forum.typst.app/t/how-to-counter-display-at-location-or-get-remote-context/5096/2
     if el != none and el.func() == math.equation {
-      [#el.supplement #counter(heading.where(level: 1)).display().#counter(math.equation).display("1.1")]
+      [#el.supplement #counter(heading.where(level: 1)).display().#counter(el.func()).at(el.location()).first()]
     } else {
       it
     }
@@ -205,10 +205,20 @@
   }
 
   show heading.where(level: 1): it => context {
-    counter(figure).update(0)
+    counter(figure.where(kind: image)).update(0)
+    counter(figure.where(kind: table)).update(0)
+    counter(figure.where(kind: "par")).update(0)
+    counter(figure.where(kind: "callout")).update(0)
+    counter(figure.where(kind: "callout")).update(0)
+    counter(figure.where(kind: "info")).update(0)
+    counter(figure.where(kind: "faq")).update(0)
+    counter(figure.where(kind: "danger")).update(0)
+    counter(figure.where(kind: "tip")).update(0)
+    counter(figure.where(kind: "success")).update(0)
+    counter(figure.where(kind: "definition")).update(0)
+    counter(figure.where(kind: "theorem")).update(0)
+    counter(figure.where(kind: "proof")).update(0)
     counter(math.equation).update(0)
-
-    blankpage(single: false)
 
     let content = [#text(size: font-sizes.chapter)[#it]]
 
@@ -231,7 +241,6 @@
               ]),
               line(length: 100%, stroke: 1pt + black),
             )
-            #v(0.75em)
           ]))]
       } else {
         content = align(chapter-alignment, [
@@ -250,7 +259,18 @@
     if chapter-style == "wonderland" {
       content = block(width: 100%, content)
     } else {
-      content = block(width: 80%, content)
+      content = block(width: 90%, content)
+    }
+
+    let currpage = counter(page).get().first()
+
+    if currpage > 1 or it.supplement == [toc] {
+      pagebreak()
+      {
+        set page(numbering: none, header: none)
+        let currpage = counter(page).get().first()
+        pagebreak(to: "odd")
+      }
     }
 
     align(chapter-alignment, content)
@@ -265,7 +285,7 @@
       font-sizes.subsubsection
     }
 
-    text(size: text-size)[#it]
+    text(size: text-size)[#block([#context counter(heading).display() #h(0.35em)  #it.body])]
     v(0.75em)
   }
 
@@ -328,6 +348,8 @@
   )
   set text(size: font-sizes.body)
   counter(page).update(0)
+
+  blankpage(single: true)
 
   doc
 
