@@ -10,6 +10,7 @@
   abstract: none,
   abstract-alignment: center,
   quote: none,
+  quote-alignment: center + horizon,
   acknowledgments: none,
   introduction: none,
   description: none,
@@ -164,9 +165,9 @@
   if quote != none {
     pagebreak()
     counter(page).update(n => n - 1)
-    set text(size: font-sizes.subsubsection)
+    set text(size: font-sizes.subsubsubsection)
     set page(margin: (right: 7em, left: 7em))
-    align(center + horizon, [#quote])
+    align(quote-alignment, [#quote])
   }
 
   set page(numbering: "i", margin: margin)
@@ -275,7 +276,11 @@
       }
     }
 
-    align(chapter-alignment, content)
+    if it.numbering != none {
+      align(chapter-alignment, content)
+    } else {
+      align(abstract-alignment, content)
+    }
   }
 
   show heading.where(level: 2).or(heading.where(level: 3)).or(heading.where(level: 4)): it => {
@@ -361,7 +366,7 @@
 
   if type(bib) == content {
     bib
-  } else if bib != none {
+  } else {
     bibliography(bib, title: bib-title)
   }
 
