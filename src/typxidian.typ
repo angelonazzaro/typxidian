@@ -188,7 +188,10 @@
   }
 
   if before-content != none {
-    before-content
+    context {
+      show heading: set heading(supplement: "extra-content")
+      before-content
+    }
   }
 
   if introduction != none {
@@ -276,7 +279,7 @@
       }
     }
 
-    if it.numbering != none {
+    if it.supplement != [extra-content] {
       align(chapter-alignment, content)
     } else {
       align(abstract-alignment, content)
@@ -371,6 +374,9 @@
   }
 
   if after-content != none {
-    after-content
+    context {
+      show heading: set heading(supplement: "extra-content")
+      after-content
+    }
   }
 }
