@@ -1,5 +1,7 @@
 #import "lib.typ": *
 #import "dependencies.typ": *
+#import "pages/cover.typ": cover
+#import "pages/appendix.typ": appendix
 
 #let template(
   title: none,
@@ -12,6 +14,7 @@
   quote: none,
   quote-alignment: center + horizon,
   acknowledgments: none,
+  acknowledgments-alignment: left + horizon,
   introduction: none,
   description: none,
   keywords: (),
@@ -143,9 +146,6 @@
     })
   }
 
-  // COVER
-  import "pages/cover.typ": cover
-
   cover(
     title: title,
     subtitle: subtitle,
@@ -168,6 +168,14 @@
     set text(size: font-sizes.subsubsubsection)
     set page(margin: (right: 7em, left: 7em))
     align(quote-alignment, [#quote])
+  }
+
+  if acknowledgments != none {
+    pagebreak()
+    counter(page).update(n => n - 1)
+    set text(size: font-sizes.subsubsubsection)
+    set page(margin: (right: 7em, left: 7em))
+    align(acknowledgments-alignment, [#acknowledgments])
   }
 
   set page(numbering: "i", margin: margin)
@@ -356,6 +364,7 @@
       ])
     },
   )
+
   set text(size: font-sizes.body)
   counter(page).update(0)
 
