@@ -135,7 +135,7 @@
     }
   }
 
-  // caption is aligned to center if its widht is smaller than text width, otherwise it is
+  // caption is aligned to center if its width is smaller than text width, otherwise it is
   // aligned to the left
   show figure.caption: it => context {
     v(0.25em)
