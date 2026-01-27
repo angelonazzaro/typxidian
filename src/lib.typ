@@ -67,17 +67,27 @@
 }
 
 
-#let subfigure(..args) = {
-  subpar.grid(
-    gutter: 1.5em,
-    numbering: n => {
-      numbering("1.1", ..counter(heading.where(level: 1)).get(), n)
-    },
-    numbering-sub-ref: (..n) => {
-      numbering("1.1a", ..counter(heading.where(level: 1)).get(), ..n)
-    },
-    ..args
-  )
+#let subfigure(prefix: auto, ..args) = {
+  context {
+    // if prefix is auto, we try to get the heading number.
+    // if we are in the appendix, we pass the letter (e.g., "A") manually through the `prefix` value.
+    let ch = if prefix != auto {
+      prefix
+    } else {
+      let h = counter(heading.where(level: 1)).get()
+      if h.len() > 0 { h.at(0) } else { 1 }
+    }
+
+    subpar.grid(
+      gutter: 1.75em,
+      numbering: n => [#ch.#n],
+      numbering-sub-ref: (..n) => {
+        let idx = n.pos().at(0)
+        [#ch.#idx#numbering("a", idx)]
+      },
+      ..args
+    )
+  }
 }
 
 // paragraph function imitating LaTeX's \paragraph{}{}
