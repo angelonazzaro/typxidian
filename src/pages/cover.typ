@@ -17,13 +17,22 @@
 ) = {
   set page(numbering: none)
 
-  if logo == none {
-    logo = "../figures/logo.svg"
+  let logo_image = if logo == none {
+    // use the default path
+    image("../figures/logo.svg", width: logo-width)
+  } else if type(logo) == str {
+    // use the user-provided path string
+    image(logo, width: logo-width)
+  } else if type(logo) == content {
+    // the user provided their own image() or drawing
+    logo
+  } else {
+    panic("Expected str or content for 'logo', found " + str(type(logo)))
   }
 
   align(center + top, [
     #figure(
-      image(logo, width: logo-width),
+      logo_image,
       numbering: none,
       caption: none,
     )
