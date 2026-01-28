@@ -1,4 +1,4 @@
-#import "@preview/typxidian:1.0.1": *
+#import "@preview/typxidian:1.1.0": *
 #import "abbreviations.typ": abbreviations
 
 #show: template.with(
@@ -17,7 +17,10 @@
   chapter-alignment: right,
   bib: bibliography("bibliography.bib"),
   quote: quote(block: true, quotes: true, attribution: [Some wise guy], [#lorem(25)]),
+  acknowledgments: [#lorem(50)],
+  acknowledgments-alignment: horizon + center,
   abstract: lorem(200),
+  logo-width: 50%,
 )
 
 = Welcome to TypXidian!
@@ -325,3 +328,67 @@ while the proof box replaces the `title` parameter with the `of` parameter to re
   [@th-1],
 )
 
+#show: appendix.with(
+  chapter_numbering: "A",
+  title: "Appendix A: Example",
+)
+
+With the appendix environment, one can add extra information regarding its work.
+
+== Appendix Subsection
+Depending on the `chapter_numbering` parameter, the appendix will show the relative numbering for sections automatically.
+
+The environment also handles the template's page header so to avoid showing a ghost chapter in the title. This is visible on the top of the @appendix_subsubsection page, where an example of how to correctly show the numbering for subfigures is also given.
+
+#pagebreak()
+
+When using the `#figure` environment, the template automatically takes care of the numbering. The `#subfigure` environment however requires additional help, as it uses `subpar.grid` underneath which is not aware of the prefix change.
+
+To correctly display a `#subfigure` so that its numbering is coherent with the chapter, one must pass the "prefix" parameter (using @fig:example as reference):
+
+```typ
+#subfigure(
+  columns: (1fr, 2fr),
+  figure(
+    image("assets/dog.jpg"),
+    caption: [This is a dog.]
+  ),
+  <dog>,
+  figure(
+    image("assets/cat.jpg"),
+    caption: [This is a cat.]
+  ),
+  <cat>,
+  prefix: "A",
+  caption: [This is a figure with subfigures.],
+  label: <fig:example2>
+)
+```
+will output the following subfigure having coherent prefix with the Appendix:
+
+#subfigure(
+  columns: (1fr, 2fr),
+  figure(
+    image("./figures/dog.jpg", width: 100pt),
+    caption: [This is a dog.],
+  ),
+  <dog>,
+  figure(
+    image("./figures/cat.jpg", width: 200pt),
+    caption: [This is a cat.],
+  ),
+  <cat>,
+  prefix: "A",
+  caption: [This is a figure with subfigures, but in the Appendix.],
+  label: <fig:example2>,
+)
+
+#linebreak()
+
+The `prefix` parameter allows figures, tables and similar environments to also be correctly displayed in the Table of Contents.
+
+#pagebreak()
+
+=== Appendix Subsubsection
+<appendix_subsubsection>
+Example of a subsubsection and of the page header being appropriately set for the Appendix environment.
