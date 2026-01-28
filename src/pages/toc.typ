@@ -13,7 +13,7 @@
   show outline.entry.where(level: 1): set outline.entry(fill: none)
   show outline.entry.where(level: 1): set text(weight: "semibold", size: 11pt)
   show outline.entry.where(level: 1): set block(above: 24pt)
-  heading(level: 1, "Table of Contents", numbering: none)
+  heading(level: 1, "Table of Contents", numbering: none, supplement: "toc")
   outline(depth: 3, indent: auto, title: none, target: heading)
 }
 
