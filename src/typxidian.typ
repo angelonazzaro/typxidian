@@ -60,7 +60,7 @@
   set document(
     title: title,
     // TODO: if authors is a list of dict, convert it to a list of strings getting only the name
-    // author: authors,
+    // author:,
     description: description,
     keywords: keywords,
   )

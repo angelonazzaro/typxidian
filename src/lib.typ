@@ -61,8 +61,8 @@
     // this is reserved for separting chapters
     // we want at least one blank page between chapters
     // each chapter must start on an odd page
-    pagebreak()
-    pagebreak(to: "even")
+    // pagebreak()
+    pagebreak(to: "odd")
   }
 }
 
