@@ -61,29 +61,39 @@
 
 
 #let highlight-words(acr, def) = {
-  let words = def.split()
-  let out = ()
   let matches = ()
   let acr_idx = 0
 
+  // Pass 1: Strict case-sensitive match
   for i in range(def.len()) {
-    let letter = def.at(i)
-
-    // Case sensitive match
-    if acr_idx < acr.len() and letter == acr.at(acr_idx) {
+    if acr_idx < acr.len() and def.at(i) == acr.at(acr_idx) {
       matches.push(i)
       acr_idx += 1
     }
   }
 
-
-  // Case-insensitive match
+  // Pass 2: Case-insensitive match prioritizing word boundaries
   if acr_idx < acr.len() {
+    matches = () // Reset matches array
+    acr_idx = 0  // Reset acronym pointer
+    
     for i in range(def.len()) {
-      let letter = def.at(i)
+      if acr_idx < acr.len() and upper(def.at(i)) == upper(acr.at(acr_idx)) {
+        // A boundary is index 0, or preceded by a space or a hyphen
+        if i == 0 or def.at(i - 1) == " " or def.at(i - 1) == "-" {
+          matches.push(i)
+          acr_idx += 1
+        }
+      }
+    }
+  }
 
-      // Case sensitive match
-      if acr_idx < acr.len() and upper(letter) == upper(acr.at(acr_idx)) {
+  // Pass 3: Pure case-insensitive fallback (if word boundaries didn't match perfectly)
+  if acr_idx < acr.len() {
+    matches = ()
+    acr_idx = 0
+    for i in range(def.len()) {
+      if acr_idx < acr.len() and upper(def.at(i)) == upper(acr.at(acr_idx)) {
         matches.push(i)
         acr_idx += 1
       }
@@ -91,17 +101,31 @@
   }
 
   let content = []
-  let i = 0
 
+  // Safe exit if definition doesn't contain the acronym letters
+  if matches.len() == 0 {
+    return [#def]
+  }
+
+  let i = 0
   while i < matches.len() {
-    if i > 0 {
+    if i == 0 {
+      // Safely grab any prefix characters before the first match
+      if matches.at(0) > 0 {
+        content += [#def.slice(0, matches.at(0))]
+      }
+    } else {
       content += [#def.slice(matches.at(i - 1) + 1, matches.at(i))]
     }
+    
     content += [#text(weight: "bold", def.at(matches.at(i)))]
     i += 1
   }
 
-  content += [#def.slice(matches.at(i - 1) + 1)]
+  // Append any trailing characters
+  if matches.last() + 1 < def.len() {
+    content += [#def.slice(matches.last() + 1)]
+  }
 
   content
 }
