@@ -1,4 +1,4 @@
-#import "@preview/typxidian:1.1.0": *
+#import "@preview/typxidian:1.1.1": *
 #import "abbreviations.typ": abbreviations
 
 #show: template.with(
@@ -8,7 +8,13 @@
   course: [Master of Science (Computer Science)],
   university: [University of Salerno],
   academic-year: [2024-2025],
-  authors: ((name: "Mario Rossi", email: "mario@rossi.it", num: "Registration Number: XXXX"),),
+  authors: (
+    (
+      name: "Mario Rossi",
+      email: "mario@rossi.it",
+      num: "Registration Number: XXXX",
+    ),
+  ),
   supervisors: ("Prof. Giuseppe Verdi", "Prof. Mario Bianchi"),
   is-thesis: true,
   thesis-type: [master thesis],
@@ -16,7 +22,9 @@
   abstract-alignment: center,
   chapter-alignment: right,
   bib: bibliography("bibliography.bib"),
-  quote: quote(block: true, quotes: true, attribution: [Some wise guy], [#lorem(25)]),
+  quote: quote(block: true, quotes: true, attribution: [Some wise guy], [#lorem(
+    25,
+  )]),
   acknowledgments: [#lorem(50)],
   acknowledgments-alignment: horizon + center,
   abstract: lorem(200),
