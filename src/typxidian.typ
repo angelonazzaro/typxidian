@@ -50,6 +50,8 @@
   after-content: none,
   doc,
 ) = {
+  init-acronyms(abbreviations)
+
   set page(
     paper: paper,
     binding: binding,
@@ -312,7 +314,6 @@
 
 
   // Acronyms
-  init-acronyms(abbreviations)
   print-index(
     sorted: "up",
     row-gutter: 20pt,
