@@ -260,9 +260,9 @@
           ]))]
       } else {
         content = align(chapter-alignment, [
-          #text(size: font-sizes.subsection, fill: chapter-color)[#upper(chapter-supplement) #(
-              counter(heading).get().first()
-            )]
+          #text(size: font-sizes.subsection, fill: chapter-color)[
+            #upper(it.supplement) #numbering(it.numbering, counter(heading).get().first())
+          ]
           #linebreak()
           #v(0.35em)
           #text(size: font-sizes.chapter)[#it.body]
@@ -305,7 +305,12 @@
       font-sizes.subsubsection
     }
 
-    text(size: text-size)[#block([#context counter(heading).display() #h(0.35em)  #it.body])]
+    text(size: text-size)[#block([
+      #if it.numbering != none [
+        #context counter(heading).display(it.numbering) #h(0.35em)
+      ]
+      #it.body
+    ])]
     v(0.75em)
   }
 
@@ -353,9 +358,21 @@
         body = [#curr-page #h(1fr) #header-title]
       } else {
         alignment = left
-        let header-title = query(selector(heading.where(level: 1)).before(here())).last().body
-        body = [#chapter-supplement #counter(heading.where(level: 1)).display(): #header-title
-          #h(1fr) #curr-page]
+        let last-heading = query(selector(heading.where(level: 1)).before(here())).last()
+        
+        // Format the number using the heading's own numbering style
+        let formatted-num = if last-heading.numbering != none {
+          numbering(last-heading.numbering, counter(heading).at(last-heading.location()).first())
+        }
+        
+        body = [
+          // Only display the supplement and number if the heading actually has numbering
+          #if formatted-num != none [
+            #last-heading.supplement #formatted-num: 
+          ]
+          #last-heading.body
+          #h(1fr) #curr-page
+        ]
       }
 
       align(alignment, [
@@ -385,7 +402,7 @@
 
   if after-content != none {
     context {
-      show heading: set heading(supplement: "extra-content")
+      show heading.where(numbering: none): set heading(supplement: "extra-content")
       after-content
     }
   }
